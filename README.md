@@ -10,7 +10,7 @@ git clone https://github.com/khanchingghis/horde.git 2> /dev/null || git -C ./ho
 
 From there the following scripts can be run:
 
-`.horde/bash/postPlayers.sh` - Reads Pavlov logs and posts a connection log to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/).
+`.horde/bash/postPlayers.sh` - Reads Pavlov logs and posts a connection log to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/). This can be run again to update the log with any new players since the last time you ran the script, as long as you have not changed the server name.
 
 `.horde/bash/postPlayersMonitorInstall.sh` - Creates and enables a service that will continually post to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/) whenever a new player joins.
 

@@ -2,6 +2,7 @@
 
 gFormID="1FAIpQLSfBoKeQp27rP0AnZUguhBITjzEd4MPdfQYnYzP2k_TesDSKRg"
 gSheetID="1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc"
+gPostURL="https://docs.google.com/forms/u/0/d/e/"$gFormID"/formResponse"
 gameFile=$(sudo find /home/ -name "Game.ini" -print)
 serverName=$(awk -F "=" '/ServerName/ {print $2}' $gameFile)
 
@@ -14,5 +15,6 @@ tail -f -n0 /home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log | gawk -F '(Lo
     arg2="entry.412058581="$3;
     arg3="entry.1196311754="$4;
     arg4="entry.218900039='"$serverName"'";
-    system("curl -s -o /dev/null --data-urlencode \"" arg1"\" --data-urlencode \"" arg2"\" --data-urlencode \"" arg3"\" --data-urlencode \"" arg4"\" " url);
+    system("curl -s -o /dev/null --data-urlencode \"" arg1"\" --data-urlencode \"" arg2"\" --data-urlencode \"" arg3"\" --data-urlencode \"" arg4"\" '$gPostURL'");
+    print(NR, a[1], $3, $4, "Sent");
     }'
