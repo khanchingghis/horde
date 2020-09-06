@@ -1,0 +1,14 @@
+[Unit]
+Description=Posts New Server Entrants to Google Sheet
+
+[Service]
+Type=simple
+WorkingDirectory=/home/steam/pavlovserver
+ExecStart=/home/steam/pavlovserver/postPlayersMonitor.sh
+RestartSec=1
+Restart=always
+User=steam
+Group=steam
+
+[Install]
+WantedBy = multi-user.target
