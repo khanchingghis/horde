@@ -1,10 +1,12 @@
 #!/bin/bash
 
+
 gFormID="1FAIpQLSfBoKeQp27rP0AnZUguhBITjzEd4MPdfQYnYzP2k_TesDSKRg"
 gSheetID="1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc"
 gPostURL="https://docs.google.com/forms/u/0/d/e/"$gFormID"/formResponse"
 gameFile=$(find /home/ -name "Game.ini" -print)
 serverName=$(awk -F "=" '/ServerName/ {print $2}' $gameFile)
+if echo $gameFile | grep '.ini' >/dev/null; then serverName="$serverName"; else serverName="Unknown"; fi;
 
 tail -f -n0 /home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log | gawk -F '(LogNet:|name=| userId: NULL:| platform:)' '/userId/ {
     split($1,a,":");

@@ -5,9 +5,10 @@ gSheetID="1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc"
 gPostURL="https://docs.google.com/forms/u/0/d/e/"$gFormID"/formResponse"
 gameFile=$(sudo find /home/ -name "Game.ini" -print)
 serverName=$(awk -F "=" '/ServerName/ {print $2}' $gameFile)
+if echo $gameFile | grep '.ini' >/dev/null; then serverName="$serverName"; else serverName="Unknown"; fi;
 latestUrl="https://docs.google.com/spreadsheets/d/"$gSheetID"/gviz/tq"
 urlParams="tq=select max(B) where C='$serverName'"
-response=$(curl -s --data-urlencode "$urlParams" $latestUrl)
+response=$(curl -sG --data-urlencode "$urlParams" $latestUrl)
 latestDate=$(curl -s $latestUrl | awk -F '(setResponse\\(|\\);)' '// {print $2}' | jq '.table.rows[0].c[0].v')
 latestDateCheck=$(sed 's/[.-]//g' <<< $latestDate)
 if echo $latestDateCheck | grep '[0-9]' >/dev/null; then latestTimeStamp="$latestDateCheck"; else latestTimeStamp="0"; fi;

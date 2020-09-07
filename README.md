@@ -7,11 +7,12 @@ After following the [Dedicated Server Guide](http://wiki.pavlov-vr.com/index.php
 ```bash
 rm -rf ./horde/ && git clone https://github.com/khanchingghis/horde.git
 chmod +x ./horde/bash/postPlayers.sh ./horde/bash/postPlayersMonitor.sh ./horde/bash/postPlayersMonitorInstall.sh
+sudo apt-get install jq
 ```
 
 From there the following scripts can be run:
 
-`./horde/bash/postPlayers.sh` - Reads Pavlov logs and posts a connection log to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/). This can be run again to update the log with any new players since the last time you ran the script, as long as you have not changed the server name.
+`./horde/bash/postPlayers.sh` - Reads Pavlov logs and posts a player connection log to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/). This can be run again to update the log with any new players since the last time you ran the script, as long as you have not changed the server name.
 
-`sudo ./horde/bash/postPlayersMonitorInstall.sh` - Creates and enables a service that will continually post to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/) whenever a new player joins.
+`sudo ./horde/bash/postPlayersMonitorInstall.sh` - Creates and enables a service that will continually post to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/) whenever a new player joins your server.
 
