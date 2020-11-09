@@ -14,5 +14,5 @@ From there the following scripts can be run:
 
 `./horde/bash/postPlayers.sh` - Reads Pavlov logs and posts a player connection log to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/). This can be run again to update the log with any new players since the last time you ran the script, as long as you have not changed the server name.
 
-`sudo ./horde/bash/postPlayersMonitorInstall.sh` - Creates and enables a service that will continually post to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/) whenever a new player joins your server.
+`sudo ./horde/bash/postPlayersMonitorInstall.sh` - Creates and enables a service that will post to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/) whenever a new player joins your server.
 

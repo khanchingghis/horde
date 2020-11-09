@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 #Saved in ~
 gFormID="1FAIpQLSfBoKeQp27rP0AnZUguhBITjzEd4MPdfQYnYzP2k_TesDSKRg"
 gSheetID="1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc"
