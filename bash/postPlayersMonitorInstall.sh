@@ -1,4 +1,5 @@
 #!/bin/bash
+#Installs Players Monitor
 
 thisDir=$(dirname "$0")
 cp $thisDir/postPlayersMonitor.service /etc/systemd/system/postPlayersMonitor.service

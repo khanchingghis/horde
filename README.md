@@ -16,3 +16,5 @@ From there the following scripts can be run:
 
 `sudo ./horde/bash/postPlayersMonitorInstall.sh` - Creates and enables a service that will post to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/) whenever a new player joins your server.
 
+`sudo ./horde/bash/postPlayersMonitorInstall.sh` - Creates and enables a service that will post to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/) whenever a new player joins your server.
+

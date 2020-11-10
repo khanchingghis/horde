@@ -1,4 +1,5 @@
 #!/bin/bash
+#Pings Google Sheet with IP and Game.ini location
 
 gFormID="1FAIpQLSexRKMLh1Cnhq_qXQ5qVvPQDDqiN8MyhGtm9e7OtfKVDB-LkA"
 gPostURL="https://docs.google.com/forms/u/0/d/e/"$gFormID"/formResponse"

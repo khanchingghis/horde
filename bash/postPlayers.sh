@@ -1,5 +1,7 @@
 #!/bin/bash
 #Saved in ~
+#One Time post player log to google sheet
+
 gFormID="1FAIpQLSfBoKeQp27rP0AnZUguhBITjzEd4MPdfQYnYzP2k_TesDSKRg"
 gSheetID="1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc"
 gPostURL="https://docs.google.com/forms/u/0/d/e/"$gFormID"/formResponse"
