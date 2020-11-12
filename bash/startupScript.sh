@@ -6,7 +6,7 @@ remoteGameini="https://docs.google.com/spreadsheets/d/1xTNsaQoXIdYJWLzHBuojIwFnv
 localGameini="/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini"
 
 echo "Updating Maps..."
-git clone $mapsRepo || git -C ./horde/ pull
+git clone $hordeRepo || git -C ./horde/ pull
 cd ./horde/maps
 unzip -o "*.zip" -d $mapsLocalFolder
 chmod +x -R $mapsLocalFolder
