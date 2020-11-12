@@ -9,7 +9,11 @@ echo "Updating Maps..."
 git clone $hordeRepo || git -C ./horde/ pull
 cd ./horde/maps
 unzip -o "*.zip" -d $mapsLocalFolder
-chmod +x -R $mapsLocalFolder
+chmod +rx -R $mapsLocalFolder
 
 echo "Updating Game.ini..."
 curl -L $remoteGameini > $localGameini
+chmod +rx $localGameini
+sed -i 's/""/-quote-/gi' $localGameini
+sed -i 's/"//gi' $localGameini
+sed -i 's/-quote-/"/gi' $localGameini
