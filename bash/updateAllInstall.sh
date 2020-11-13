@@ -1,11 +1,11 @@
 #!/bin/bash
 #Installs Service
 
-thisDir=$(dirname "$0")
-serviceName="postPlayersMonitor"
+hordeBashDir="/root/horde/bash"
+serviceName="updateAll"
 serviceFile="$serviceName.service"
 scriptFile="$serviceName.sh"
-cp $thisDir/$serviceFile /etc/systemd/system/$serviceFile
-cp $thisDir/$scriptFile /home/steam/pavlovserver/$scriptFile
+echo "copying $hordeBashDir/$serviceFile to /etc/systemd/system/$serviceFile"
+cp $hordeBashDir/$serviceFile /etc/systemd/system/$serviceFile
 systemctl enable $serviceName
 systemctl start $serviceName
