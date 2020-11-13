@@ -5,8 +5,8 @@ Description=Update Pavlov Maps and Game.ini
 Type=oneshot
 WorkingDirectory=/home/steam/
 ExecStart=/home/steam/horde/bash/updateAll.sh
-User=steam
-Group=steam
+User=root
+Group=root
 
 [Install]
 WantedBy = multi-user.target
