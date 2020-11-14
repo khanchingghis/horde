@@ -4,6 +4,8 @@
 
 After following the [Dedicated Server Guide](http://wiki.pavlov-vr.com/index.php?title=Dedicated_server) to set up a custom Pavlov server, SSH into your server and run this to clone or update the repo:
 
+You'll need jq for some of the scripts.
+
 ```bash
 rm -rf ./horde/ && git clone https://github.com/khanchingghis/horde.git
 chmod +x ./horde/bash/postPlayers.sh ./horde/bash/postPlayersMonitor.sh ./horde/bash/postPlayersMonitorInstall.sh
@@ -16,5 +18,6 @@ From there the following scripts can be run:
 
 `sudo ./horde/bash/postPlayersMonitorInstall.sh` - Creates and enables a service that will post to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/) whenever a new player joins your server.
 
-`sudo ./horde/bash/postPlayersMonitorInstall.sh` - Creates and enables a service that will post to [this Google Sheet](https://docs.google.com/spreadsheets/d/1XTOp2iFGMDvrDBgMfDc4HO88EDUMAzAEvSc45xNKTCc/) whenever a new player joins your server.
+`sudo su`
+`sudo ./horde/bash/updateAllInstall.sh` - Creates and enables a service that will update this repo, update maps, and update game.ini on reboot. Change remoteGameini in the updateAll.sh file to your remote game.ini file.
 

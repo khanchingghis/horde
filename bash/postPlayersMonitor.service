@@ -1,5 +1,6 @@
 [Unit]
 Description=Posts New Server Entrants to Google Sheet
+After=pavlov.service
 
 [Service]
 Type=simple

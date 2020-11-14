@@ -1,13 +1,17 @@
 #!/bin/bash
 
+localInstallDir="/root/"
+localHordeDir=$localInstallDir"horde/"
 hordeRepo="https://github.com/khanchingghis/horde"
 mapsLocalFolder="/home/steam/pavlovserver/Pavlov/Saved/maps/"
 remoteGameini="https://docs.google.com/spreadsheets/d/1xTNsaQoXIdYJWLzHBuojIwFnvSRKbVxxZqyrJ5Nr4xA/export?format=csv"
 localGameini="/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini"
 
 echo "Updating Maps..."
-git clone $hordeRepo || git -C ./horde/ pull
-cd ./horde/maps
+cd $localInstallDir
+git clone $hordeRepo || git -C $localHordeDir pull
+chmod +rx -R $localHordeDir
+cd $localHordeDir
 unzip -o "*.zip" -d $mapsLocalFolder
 chmod +rx -R $mapsLocalFolder
 
