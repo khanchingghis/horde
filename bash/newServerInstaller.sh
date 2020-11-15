@@ -18,8 +18,8 @@ Install_Server () {
   clear
     read -p "Folder/Service Name [pavlovserver]: " FOLD_NAME;echo -e '\n';clear
     FOLD_NAME=${FOLD_NAME:-pavlovserver}
-    read -p "Server Name [Default Server]: " SERVER_NAME;echo -e '\n';clear
-    SERVER_NAME=${SERVER_NAME:-Default Server}
+    read -p "Server Name [Horde]: " SERVER_NAME;echo -e '\n';clear
+    SERVER_NAME=${SERVER_NAME:-Horde}
     read -p "Max Players [8]: " SERVER_MAX_PLAYERS;echo -e '\n';clear
     SERVER_MAX_PLAYERS=${SERVER_MAX_PLAYERS:-8}
     read -p "Game Port [7777]: " SERVER_PORT;echo -e '\n';clear
@@ -50,7 +50,7 @@ fi
 
 read -p "Admins(s) [76561198017260467 76822158017823567]: " SERVER_ADMINS; clear
 
-# get_maps
+get_maps
 
 clear
 config="
@@ -200,8 +200,8 @@ do
     break;
 done;
   clear
-    read -p "Server Name [Default Server]: " SERVER_NAME;echo -e '\n';clear
-    SERVER_NAME=${SERVER_NAME:-Default Server}
+    read -p "Server Name [Horde]: " SERVER_NAME;echo -e '\n';clear
+    SERVER_NAME=${SERVER_NAME:-Horde}
     read -p "Max Players [8]: " SERVER_MAX_PLAYERS;echo -e '\n';clear
     SERVER_MAX_PLAYERS=${SERVER_MAX_PLAYERS:-8}
     read -p "Game Port [7777]: " SERVER_PORT;echo -e '\n';clear
@@ -234,7 +234,7 @@ read -p "Admins(s) [76561198017260467 76822158017823567]: " SERVER_ADMINS
 
 
 
-# get_maps
+get_maps
 
 MAPS_CLEAN=$( IFS=$'\n'; echo "${ARRAY[*]}" )
 cat >/home/${INSTALL_USER}/${FOLD_NAME}/Pavlov/Saved/Config/LinuxServer/Game.ini <<EOL
