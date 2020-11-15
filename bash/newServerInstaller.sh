@@ -231,9 +231,6 @@ fi
 clear
 read -p "Admins(s) [76561198017260467 76822158017823567]: " SERVER_ADMINS
 
-
-
-
 get_maps
 
 MAPS_CLEAN=$( IFS=$'\n'; echo "${ARRAY[*]}" )
