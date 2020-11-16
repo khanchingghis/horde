@@ -1,11 +1,10 @@
 [Unit]
 Description=Posts New Server Entrants to Google Sheet
-After=pavlov.service
 
 [Service]
 Type=simple
 WorkingDirectory=/home/steam/pavlovserver
-ExecStart=/home/steam/pavlovserver/postPlayersMonitor.sh
+ExecStart=/root/horde/bash/postPlayersMonitor.sh
 RestartSec=1
 Restart=always
 User=steam
