@@ -1,0 +1,14 @@
+{
+  "name": "score",
+  "version": "1.0.0",
+  "description": "Pavlov Score",
+  "main": "score.js",
+  "scripts": {
+    "test": "node score.js"
+  },
+  "author": "Chingghis",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.0"
+  }
+}
