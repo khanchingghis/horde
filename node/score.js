@@ -7,6 +7,7 @@ const readline = require("readline");
 const rcon = require('./rcon')
 const myFormID = '1FAIpQLScOi8_7neH_71KM1AuS2PL2ZIs794eNv1u4ZunEz8WFuXwyBg'
 let latestKDAs = {}
+let iteration = 0
 
 function getServerFile(callback) {
 
@@ -58,7 +59,9 @@ function postScores(server) {
         if (playerList.length > 0) {
             gFormPost(myFormID, playerList, serverInfo)
         } else {
-            console.log(timeStamp, 'no players...')
+            if (iteration % 12 == 0) {
+                console.log(timeStamp, 'no players...')
+            }
         }
     })
 }
@@ -106,7 +109,8 @@ function init() {
         // console.log(JSON.stringify(server))
         setInterval(() => {
             postScores(server)
-        }, 2000)
+            iteration ++
+        }, 5000)
     })
 }
 
