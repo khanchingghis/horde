@@ -56,14 +56,17 @@ function getServerFile(callback) {
 function postScores(server) {
     servers.getFullServerInfo(server).then(thisServer => {
         if (!thisServer) return null
+        
         const playerList = thisServer.playerList
         const serverInfo = thisServer.serverInfo.ServerInfo
+        if (iteration == 1) latestKDAs.latestMap = serverInfo.mapLabel
+
         const timeNow = new Date()
         const timeStamp = timeNow.toISOString()
 
         if (playerList.length > 0) {
             const allKDASum = sumAllKDA(playerList)
-            if (allKDASum == 0 && allKDASum != latestKDAs.allKDASum) {
+            if ((allKDASum == 0 && allKDASum != latestKDAs.allKDASum) || serverInfo.mapLabel != latestKDAs.latestMap) {
                 thisGameId = uuidv4()
                 latestKDAs.allKDASum = allKDASum
             }
@@ -97,6 +100,7 @@ function gFormPost(formID, playerList, serverInfo) {
         const kdaSum = kda.reduce((a, b) => a + b, 0)
         const playerID = playerInfo.UniqueId
         const playerName = playerInfo.PlayerName
+        const playerCountInt = serverInfo.PlayerCount.split('/')[0]
 
         if (latestKDAs[playerID] && latestKDAs[playerID] == kdaSum) {
             if (iteration % 5 == 0) {
@@ -114,7 +118,7 @@ function gFormPost(formID, playerList, serverInfo) {
                 "entry.1339739528": kda[2],
                 "entry.1078658169": serverInfo.ServerName,
                 "entry.742200735": serverInfo.gameMode,
-                "entry.686146210": serverInfo.slots,
+                "entry.686146210": playerCountInt,
                 "entry.1863816147": thisGameId
             }
 
@@ -130,6 +134,7 @@ function init() {
     getServerFile((server) => {
         // console.log(JSON.stringify(server))
         setInterval(() => {
+            
             postScores(server)
             iteration++
         }, 5000)
