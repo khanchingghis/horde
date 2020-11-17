@@ -5,9 +5,13 @@ const serverFileName = 'serverOptions.json'
 const serverPath = thisPath + `/${serverFileName}`
 const readline = require("readline");
 const rcon = require('./rcon')
+const servers = require('./servers')
+const { v4: uuidv4 } = require('uuid');
+
 const myFormID = '1FAIpQLScOi8_7neH_71KM1AuS2PL2ZIs794eNv1u4ZunEz8WFuXwyBg'
 let latestKDAs = {}
 let iteration = 0
+let thisGameId = uuidv4()
 
 function getServerFile(callback) {
 
@@ -50,20 +54,36 @@ function getServerFile(callback) {
 }
 
 function postScores(server) {
-    rcon.getServerInfo(server).then(server => {
-        const playerList = server.playerList
-        const serverInfo = server.serverInfo.ServerInfo
+    servers.getFullServerInfo(server).then(thisServer => {
+        if (!thisServer) return null
+        const playerList = thisServer.playerList
+        const serverInfo = thisServer.serverInfo.ServerInfo
         const timeNow = new Date()
         const timeStamp = timeNow.toISOString()
 
         if (playerList.length > 0) {
+            const allKDASum = sumAllKDA(playerList)
+            if (allKDASum == 0 && allKDASum != latestKDAs.allKDASum) {
+                thisGameId = uuidv4()
+                latestKDAs.allKDASum = allKDASum
+            }
             gFormPost(myFormID, playerList, serverInfo)
         } else {
-            if (iteration % 12 == 0) {
+            if (iteration % 2 == 0) {
                 console.log(timeStamp, 'no players...')
             }
         }
     })
+}
+
+function sumAllKDA(playerList) {
+    let allKDASum = playerList[0].PlayerInfo.KDA.split('/').reduce((a, b) => a + b, 0)
+    if (playerList.length > 1) {
+        allKDASum = playerList.reduce((a, b) => {
+            return a.PlayerInfo.KDA.split('/').reduce((a, b) => a + b, 0) + b.PlayerInfo.KDA.split('/').reduce((a, b) => a + b, 0)
+        }, 0)
+    }
+    return allKDASum
 }
 
 function gFormPost(formID, playerList, serverInfo) {
@@ -79,21 +99,23 @@ function gFormPost(formID, playerList, serverInfo) {
         const playerName = playerInfo.PlayerName
 
         if (latestKDAs[playerID] && latestKDAs[playerID] == kdaSum) {
-            //skip post
-            console.log(timeStamp, 'No KDA change. Skipping post...')
+            if (iteration % 5 == 0) {
+                console.log(timeStamp, 'No KDA change. Skipping post...')
+            }
         } else {
             latestKDAs[playerID] = kdaSum
             const sendObj = {
                 "entry.748779749": playerName,
                 "entry.1044143160": playerID,
                 "entry.1011362435": playerInfo.TeamId,
-                "entry.1974831837": serverInfo.MapLabel,
+                "entry.1974831837": serverInfo.mapId,
                 "entry.530914442": kda[0],
                 "entry.1923937347": kda[1],
                 "entry.1339739528": kda[2],
                 "entry.1078658169": serverInfo.ServerName,
-                "entry.742200735": serverInfo.GameMode,
-                "entry.686146210": serverInfo.PlayerCount
+                "entry.742200735": serverInfo.gameMode,
+                "entry.686146210": serverInfo.PlayerCount,
+                "entry.1863816147": thisGameId
             }
 
             axios.get(formUrl, {
@@ -109,7 +131,7 @@ function init() {
         // console.log(JSON.stringify(server))
         setInterval(() => {
             postScores(server)
-            iteration ++
+            iteration++
         }, 5000)
     })
 }
