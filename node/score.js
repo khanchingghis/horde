@@ -108,13 +108,13 @@ function gFormPost(formID, playerList, serverInfo) {
                 "entry.748779749": playerName,
                 "entry.1044143160": playerID,
                 "entry.1011362435": playerInfo.TeamId,
-                "entry.1974831837": serverInfo.mapId,
+                "entry.1974831837": serverInfo.mapLabel,
                 "entry.530914442": kda[0],
                 "entry.1923937347": kda[1],
                 "entry.1339739528": kda[2],
                 "entry.1078658169": serverInfo.ServerName,
                 "entry.742200735": serverInfo.gameMode,
-                "entry.686146210": serverInfo.PlayerCount,
+                "entry.686146210": serverInfo.slots,
                 "entry.1863816147": thisGameId
             }
 
