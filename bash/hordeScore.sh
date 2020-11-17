@@ -1,6 +1,5 @@
 #!/bin/bash
-#Monitors KDA
-
+#Monitors and posts KDA updates
 
 hordeNodeDir="/root/horde/node"
 cd $hordeNodeDir

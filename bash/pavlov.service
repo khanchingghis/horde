@@ -1,6 +1,7 @@
 [Unit]
 Description=Pavlov VR dedicated server
 After=updateAll.service
+Before=hordeScore.service
 
 [Service]
 Type=simple
