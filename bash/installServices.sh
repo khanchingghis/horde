@@ -17,9 +17,10 @@ install_service() {
     serviceName=$1
     serviceFile="$serviceName.service"
     scriptFile="$serviceName.sh"
+    systemctl stop $serviceName
+    systemctl disable $serviceName
     echo "copying $hordeBashDir/$serviceFile to /etc/systemd/system/$serviceFile"
     cp $hordeBashDir/$serviceFile /etc/systemd/system/$serviceFile
-    systemctl stop $serviceName
     systemctl enable $serviceName
     systemctl start $serviceName
 }
