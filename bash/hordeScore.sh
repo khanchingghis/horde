@@ -2,8 +2,12 @@
 #Monitors KDA
 
 
-sudo apt-get update -y
-sudo apt-get install -y unzip
-sudo apt-get install -y jq
+hordeNodeDir="/root/horde/node"
+cd $hordeNodeDir
+scorePath = $hordeNodeDir'/score.js'
 
-hordeBashDir="/root/horde/bash"
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get install -y nodejs
+sudo apt-get install -y npm
+
+node score.js
