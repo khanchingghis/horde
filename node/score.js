@@ -130,7 +130,8 @@ async function gFormPost(formID, playerList, serverInfo, serverCon, activeSocket
         const kda = playerInfo.KDA.split('/')
         const kdaSum = kda.reduce((a, b) => a + b, 0)
         const playerID = playerInfo.UniqueId
-        const playerName = playerInfo.PlayerName
+        const nameIntRegex = /<[0-9]. /g
+        const playerName = playerInfo.PlayerName.replace(nameIntRegex,"")
         const playerCountInt = serverInfo.PlayerCount.split('/')[0]
         const thisServerName = serverInfo.ServerName
 

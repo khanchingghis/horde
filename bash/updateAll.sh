@@ -8,12 +8,14 @@ mapsLocalFolder="/home/steam/pavlovserver/Pavlov/Saved/maps/"
 remoteGameini="https://docs.google.com/spreadsheets/d/1xTNsaQoXIdYJWLzHBuojIwFnvSRKbVxxZqyrJ5Nr4xA/export?format=csv"
 localGameini="/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini"
 
-echo "Updating Maps..."
+echo "Updating Repo..."
 cd $localInstallDir
 git clone $hordeRepo || cd $localHordeDir && git fetch origin master && git reset --hard origin/master
 chmod +rx -R $localHordeDir
+
+echo "Updating Maps..."
 cd $localMapsDir
-unzip -o "*.zip" -d $mapsLocalFolder
+unzip -qq -o "*.zip" -d $mapsLocalFolder
 chmod +rx -R $mapsLocalFolder
 
 echo "Updating Game.ini..."
