@@ -11,11 +11,15 @@ const { v4: uuidv4 } = require('uuid');
 const myFormID = '1FAIpQLScOi8_7neH_71KM1AuS2PL2ZIs794eNv1u4ZunEz8WFuXwyBg'
 
 let iteration = 0
+const spinRateMS = 2000
 const cycleRateMS = 3000
 const logCyleInt = 2
 const logActiveCycleInt = 2
 
-let latestKDAs = {}
+let latestKDAs = {
+    "MapLabel":"",
+    "GameMode":""
+}
 let thisGameId = uuidv4()
 
 function getServerFile(callback) {
@@ -58,10 +62,10 @@ function getServerFile(callback) {
     }
 }
 
-async function postScores(server) {
+async function postScores(activeSocket, server) {
 
     //local first, then http
-    const thisServer = await rcon.getServerInfo(server)
+    const thisServer = await rcon.getServerInfo(activeSocket)
     if (!thisServer) return null
 
     let playerList = thisServer.playerList
@@ -72,43 +76,51 @@ async function postScores(server) {
 
 
     if (iteration == 1) {
-        const fullServerDetails = await servers.getFullServerInfo(server)
+        const fullServerDetails = await servers.getFullServerInfo(activeSocket, server)
         serverInfo = fullServerDetails.serverInfo.ServerInfo
         latestKDAs.latestMapLabel = serverInfo.mapLabel
         latestKDAs.latestMapID = serverInfo.MapLabel
     }
 
     if (playerList.length > 0) {
+        //console.log(JSON.stringify(playerList))
         const allKDASum = sumAllKDA(playerList)
 
-        if ((allKDASum == 0 && allKDASum != latestKDAs.allKDASum) || serverInfo.MapLabel != latestKDAs.latestMapID) {
+        if ((allKDASum == 0 && allKDASum != latestKDAs.allKDASum) || (serverInfo && serverInfo.MapLabel != latestKDAs.latestMapID)) {
             thisGameId = uuidv4()
             latestKDAs.allKDASum = allKDASum
             latestKDAs.latestMapID = serverInfo.MapLabel
             latestKDAs.isNewRound = true
         }
 
-            const res = await gFormPost(myFormID, playerList, serverInfo, server)
+            const res = await gFormPost(myFormID, playerList, serverInfo, server, activeSocket)
 
 
     } else {
         if (iteration % logCyleInt == 0) {
             console.log(timeStamp, 'no players...')
+            // console.log(timeStamp, 'Round', serverInfo.RoundState)
         }
     }
 }
 
+function sumKDA(player){
+    if (player.PlayerInfo) {
+        return player.PlayerInfo.KDA.split('/').reduce((a, b) => a + parseInt(b), 0)
+    } else {
+        return 0
+    }
+}
+
 function sumAllKDA(playerList) {
-    let allKDASum = playerList[0].PlayerInfo.KDA.split('/').reduce((a, b) => a + b, 0)
+    let allKDASum = sumKDA(playerList[0])
     if (playerList.length > 1) {
-        allKDASum = playerList.reduce((a, b) => {
-            return a.PlayerInfo.KDA.split('/').reduce((a, b) => a + b, 0) + b.PlayerInfo.KDA.split('/').reduce((a, b) => a + b, 0)
-        }, 0)
+        allKDASum = playerList.reduce((a, b) => a + sumKDA(b),0)
     }
     return allKDASum
 }
 
-async function gFormPost(formID, playerList, serverInfo, serverCon) {
+async function gFormPost(formID, playerList, serverInfo, serverCon, activeSocket) {
     const formUrl = `https://docs.google.com/forms/u/0/d/e/${formID}/formResponse`
     const timeNow = new Date()
     const timeStamp = timeNow.toISOString()
@@ -122,19 +134,20 @@ async function gFormPost(formID, playerList, serverInfo, serverCon) {
         const playerCountInt = serverInfo.PlayerCount.split('/')[0]
         const thisServerName = serverInfo.ServerName
 
-        if (latestKDAs[playerID] && latestKDAs[playerID] == kdaSum) {
-            if (iteration % logActiveCycleInt == 0) {
-                console.log(timeStamp, 'No KDA change. Skipping post...')
-            }
+        if (!latestKDAs.isNewRound && latestKDAs[playerID] && latestKDAs[playerID] == kdaSum) {
+            //No log
+            // if (iteration % logActiveCycleInt == 0) {
+            //     console.log(timeStamp, 'No KDA change. Skipping post...')
+            // }
         } else {
             latestKDAs[playerID] = kdaSum
 
-            if (latestKDAs.isNewRound) {
-                const fullServerDetails = await servers.getFullServerInfo(serverCon)
-                latestKDAs.MapLabel = fullServerDetails.serverInfo.ServerInfo.mapLabel
-                latestKDAs.GameMode = fullServerDetails.serverInfo.ServerInfo.gameMode
+            if (latestKDAs.isNewRound || latestKDAs.MapLabel.trim() == '' || latestKDAs.GameMode.trim() == '') {
                 console.log(timeStamp, 'New round!')
                 latestKDAs.isNewRound = false
+                const fullServerDetails = await servers.getFullServerInfo(activeSocket)
+                latestKDAs.MapLabel = fullServerDetails.serverInfo.ServerInfo.mapLabel
+                latestKDAs.GameMode = fullServerDetails.serverInfo.ServerInfo.gameMode
             }
 
             const sendObj = {
@@ -164,11 +177,13 @@ async function gFormPost(formID, playerList, serverInfo, serverCon) {
 function init() {
     getServerFile((server) => {
         // console.log(JSON.stringify(server))
-        setInterval(() => {
-
-            postScores(server)
-            iteration++
-        }, cycleRateMS)
+        rcon.spinServer(server, spinRateMS).then(activeSocket => {
+            setInterval(() => {
+                postScores(activeSocket, server)
+                iteration++
+            }, cycleRateMS)
+        })
+        
     })
 }
 

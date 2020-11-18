@@ -78,8 +78,8 @@ async function getServersPC() {
   return servers
 }
 
-async function getFullServerInfo(server){
-  let serverInfo = await rcon.getServerInfo(server)
+async function getFullServerInfo(activeSocket){
+  let serverInfo = await rcon.getServerInfo(activeSocket)
   const listInfo = await getServers()
   const serverList = listInfo.servers
   //server name for localhost ID
