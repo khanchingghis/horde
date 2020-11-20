@@ -147,6 +147,7 @@ async function postScores(activeSocket, psqlSettings) {
         allDSum = sumAllD(playerList)
         allASum = sumAllA(playerList)
     }
+
     serverInfo.KDASum = allKDASum
     serverInfo.KSum = allKSum
     serverInfo.DSum = allDSum
@@ -170,7 +171,7 @@ async function postScores(activeSocket, psqlSettings) {
         }
 
         const res = await psql.sendData(psqlSettings, playerList, serverInfo)
-            .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Score: ', serverInfo.ASum))
+            .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
             .catch(e => console.log('SQL Error:', e))
         latestKDAs.allKDASum = allKDASum
         return res
@@ -189,9 +190,37 @@ async function postScores(activeSocket, psqlSettings) {
 }
 
 function sumKDA(player) {
-    if (player.PlayerInfo) {
+    try {
         return player.PlayerInfo.KDA.split('/').reduce((a, b) => a + parseInt(b), 0)
-    } else {
+    } catch(e) {
+        console.log(e)
+        return 0
+    }
+}
+
+function sumK(player) {
+    try {
+        return parseInt(player.PlayerInfo.KDA.split('/')[0])
+    } catch(e) {
+        console.log(e)
+        return 0
+    }
+}
+
+function sumD(player) {
+    try {
+        return parseInt(player.PlayerInfo.KDA.split('/')[1])
+    } catch(e) {
+        console.log(e)
+        return 0
+    }
+}
+
+function sumA(player) {
+    try {
+        return parseInt(player.PlayerInfo.KDA.split('/')[2])
+    } catch(e) {
+        console.log(e)
         return 0
     }
 }
@@ -205,20 +234,29 @@ function sumAllKDA(playerList) {
 }
 
 function sumAllK(playerList) {
-    const sumA = playerList.reduce((a, b) => a + parseInt(b.PlayerInfo.KDA.split('/')[0]), 0)
-    return sumA
+    let allKSum = sumK(playerList[0])
+    if (playerList.length > 1) {
+        allKSum = playerList.reduce((a, b) => a + sumK(b), 0)
+    }
+    return allKSum
 }
 
 function sumAllD(playerList) {
-    const sumA = playerList.reduce((a, b) => a + parseInt(b.PlayerInfo.KDA.split('/')[1]), 0)
-    return sumA
+    let allDSum = sumD(playerList[0])
+    if (playerList.length > 1) {
+        allDSum = playerList.reduce((a, b) => a + sumD(b), 0)
+    }
+    return allDSum
 }
-
 
 function sumAllA(playerList) {
-    const sumA = playerList.reduce((a, b) => a + parseInt(b.PlayerInfo.KDA.split('/')[2]), 0)
-    return sumA
+    let allASum = sumA(playerList[2])
+    if (playerList.length > 1) {
+        allASum = playerList.reduce((a, b) => a + sumA(b), 0)
+    }
+    return allASum
 }
+
 
 async function gFormPost(formID, playerList, serverInfo, serverCon, activeSocket) {
     const formUrl = `https://docs.google.com/forms/u/0/d/e/${formID}/formResponse`
