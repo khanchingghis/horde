@@ -27,11 +27,20 @@ function spinServer(server, spinRateMS) {
                     socket.serverDetails = await getServerDetails(socket)
                     resolve(socket);
                 })();
-                setInterval(function() {
+
+                const iid = setInterval(function() {
                     (async() => {
-                        socket.serverDetails = await getServerDetails(socket)
+                        if (!socket.writable) {
+                            socket.end()
+                            socket.destroy()
+                            clearInterval(iid)
+                            return socket
+                        } else {
+                            socket.serverDetails = await getServerDetails(socket)
+                        }
                     })();
-                }, spinRateMS);
+                }, spinRateMS)
+                ;
             }
             if (data.toString().startsWith('Authenticated=0')) {
                 console.log('Login wrong!');

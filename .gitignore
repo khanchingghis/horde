@@ -1,3 +1,4 @@
 bash/local/
 node/serverOptions.json
+node/psqlOptions.json
 *node_modules

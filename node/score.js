@@ -1,110 +1,194 @@
 const fs = require('fs')
 const axios = require('axios')
 const thisPath = __dirname
-const serverFileName = 'serverOptions.json'
-const serverPath = thisPath + `/${serverFileName}`
 const readline = require("readline");
 const rcon = require('./rcon')
 const servers = require('./servers')
 const { v4: uuidv4 } = require('uuid');
+const psql = require('./psql')
 
 const myFormID = '1FAIpQLScOi8_7neH_71KM1AuS2PL2ZIs794eNv1u4ZunEz8WFuXwyBg'
 
 let iteration = 0
-const spinRateMS = 2000
-const cycleRateMS = 3000
-const logCyleInt = 2
+const spinRateMS = 4000
+const cycleRateMS = 4000
+const logCyleInt = 1
 const logActiveCycleInt = 2
 
 let latestKDAs = {
-    "MapLabel":"",
-    "GameMode":""
+    "MapLabel": "",
+    "mapLabel": "",
+    "GameMode": ""
 }
-let thisGameId = uuidv4()
 
-function getServerFile(callback) {
+let serverInfo = {
+    "thisGameId": uuidv4()
+}
+let playerList = []
 
-    try {
-        if (fs.existsSync(serverPath)) {
-            const server = require(serverPath)
-            callback(server)
-        } else {
-            const rl = readline.createInterface({
-                input: process.stdin,
-                output: process.stdout
-            });
+function getPSQLSettings() {
+    const psqlOptionsPath = 'psqlOptions.json'
+    const path = thisPath + `/${psqlOptionsPath}`
 
-            rl.on("close", function () {
-                console.log(`Server Details Saved to ${serverPath}`);
-                const server = require(serverPath)
-                callback(server)
-            });
-
-            console.log('No serverInfo.json found. Creating...')
-
-            rl.question("Port ? ", function (port) {
-                rl.question("Password ? ", function (password) {
-                    const serverDetails = {
-                        "ip": "localhost",
-                        "port": port,
-                        "password": password
-                    }
-                    fs.writeFileSync(serverPath, JSON.stringify(serverDetails))
-                    rl.close();
+    return new Promise(resolve => {
+        try {
+            if (fs.existsSync(path)) {
+                const server = require(path)
+                resolve(server)
+            } else {
+                const rl = readline.createInterface({
+                    input: process.stdin,
+                    output: process.stdout
                 });
 
-            });
+                rl.on("close", function () {
+                    console.log(`Server Details Saved to ${path}`);
+                    const server = require(path)
+                    resolve(server)
+                });
 
-        }
+                console.log(`No ${psqlOptionsPath} found. Creating...`)
+
+                rl.question("Host ? ", function (host) {
+                    rl.question("Port ? ", function (port) {
+                        rl.question("User ? ", function (user) {
+                            rl.question("Database ? ", function (db) {
+                                rl.question("Password ? ", function (password) {
+                                    const serverDetails = {
+                                        "host": host,
+                                        "port": port,
+                                        "user": user,
+                                        "database": db,
+                                        "password": password,
+                                    }
+                                    fs.writeFileSync(path, JSON.stringify(serverDetails))
+                                    rl.close();
+                                });
+                            });
+                        });
+                    });
+                });
+
+                }
 
     } catch (err) {
-        console.error(err)
-    }
+                console.error(err)
+            }
+        })
 }
 
-async function postScores(activeSocket, server) {
 
-    //local first, then http
-    const thisServer = await rcon.getServerInfo(activeSocket)
-    if (!thisServer) return null
+function getServerFile() {
 
-    let playerList = thisServer.playerList
-    let serverInfo = thisServer.serverInfo.ServerInfo
+    const serverFileName = 'serverOptions.json'
+    const serverPath = thisPath + `/${serverFileName}`
+
+    return new Promise(resolve => {
+        try {
+            if (fs.existsSync(serverPath)) {
+                const server = require(serverPath)
+                resolve(server)
+            } else {
+                const rl = readline.createInterface({
+                    input: process.stdin,
+                    output: process.stdout
+                });
+
+                rl.on("close", function () {
+                    console.log(`Server Details Saved to ${serverPath}`);
+                    const server = require(serverPath)
+                    resolve(server)
+                });
+
+                console.log(`No ${serverFileName} found. Creating...`)
+
+                rl.question("Port ? ", function (port) {
+                    rl.question("Password ? ", function (password) {
+                        const serverDetails = {
+                            "ip": "localhost",
+                            "port": port,
+                            "password": password
+                        }
+                        fs.writeFileSync(serverPath, JSON.stringify(serverDetails))
+                        rl.close();
+                    });
+
+                });
+
+            }
+
+        } catch (err) {
+            console.error(err)
+        }
+    })
+}
+
+async function postScores(activeSocket, psqlSettings) {
 
     const timeNow = new Date()
     const timeStamp = timeNow.toISOString()
 
+    const thisServer = rcon.getServerInfo(activeSocket)
+    if (!thisServer) return activeSocket
 
-    if (iteration == 1) {
-        const fullServerDetails = await servers.getFullServerInfo(activeSocket, server)
-        serverInfo = fullServerDetails.serverInfo.ServerInfo
-        latestKDAs.latestMapLabel = serverInfo.mapLabel
-        latestKDAs.latestMapID = serverInfo.MapLabel
-    }
+    playerList = thisServer.playerList
+    thisServerInfo = thisServer.serverInfo.ServerInfo
+    Object.assign(serverInfo, thisServerInfo)
+
+    let allKDASum = 0
+    let allKSum = 0
+    let allDSum = 0
+    let allASum = 0
 
     if (playerList.length > 0) {
-        //console.log(JSON.stringify(playerList))
-        const allKDASum = sumAllKDA(playerList)
 
-        if ((allKDASum == 0 && allKDASum != latestKDAs.allKDASum) || (serverInfo && serverInfo.MapLabel != latestKDAs.latestMapID)) {
-            thisGameId = uuidv4()
+        allKDASum = sumAllKDA(playerList)
+        allKSum = sumAllK(playerList)
+        allDSum = sumAllD(playerList)
+        allASum = sumAllA(playerList)
+    }
+    serverInfo.KDASum = allKDASum
+    serverInfo.KSum = allKSum
+    serverInfo.DSum = allDSum
+    serverInfo.ASum = allASum
+    const prevKDASum = latestKDAs.allKDASum
+    const thisMap = serverInfo.MapLabel
+    const prevMap = latestKDAs.MapLabel
+
+    if (allKDASum != prevKDASum) {
+        //Score Change
+
+        if ((allKDASum == 0 && allKDASum != prevKDASum) || thisMap != prevMap) {
+            //New Game
+            const fullServerDetails = await servers.getFullServerInfo(activeSocket)
+            Object.assign(serverInfo, fullServerDetails.serverInfo.ServerInfo)
+            latestKDAs.mapLabel = serverInfo.mapLabel
+            serverInfo.thisGameId = uuidv4()
             latestKDAs.allKDASum = allKDASum
-            latestKDAs.latestMapID = serverInfo.MapLabel
+            latestKDAs.MapLabel = serverInfo.MapLabel
             latestKDAs.isNewRound = true
         }
 
-            const res = await gFormPost(myFormID, playerList, serverInfo, server, activeSocket)
+        const res = await psql.sendData(psqlSettings, playerList, serverInfo)
+            .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Score: ', serverInfo.ASum))
+            .catch(e => console.log('SQL Error:', e))
+        latestKDAs.allKDASum = allKDASum
+        return res
+    }
 
+    else {
 
-    } else {
         if (iteration % logCyleInt == 0) {
-            console.log(timeStamp, 'no players...')
+            console.log(timeStamp, 'No change. Players:', playerList.length)
             // console.log(timeStamp, 'Round', serverInfo.RoundState)
         }
+        return serverInfo
+
     }
+
 }
 
-function sumKDA(player){
+function sumKDA(player) {
     if (player.PlayerInfo) {
         return player.PlayerInfo.KDA.split('/').reduce((a, b) => a + parseInt(b), 0)
     } else {
@@ -115,9 +199,25 @@ function sumKDA(player){
 function sumAllKDA(playerList) {
     let allKDASum = sumKDA(playerList[0])
     if (playerList.length > 1) {
-        allKDASum = playerList.reduce((a, b) => a + sumKDA(b),0)
+        allKDASum = playerList.reduce((a, b) => a + sumKDA(b), 0)
     }
     return allKDASum
+}
+
+function sumAllK(playerList) {
+    const sumA = playerList.reduce((a, b) => a + parseInt(b.PlayerInfo.KDA.split('/')[0]), 0)
+    return sumA
+}
+
+function sumAllD(playerList) {
+    const sumA = playerList.reduce((a, b) => a + parseInt(b.PlayerInfo.KDA.split('/')[1]), 0)
+    return sumA
+}
+
+
+function sumAllA(playerList) {
+    const sumA = playerList.reduce((a, b) => a + parseInt(b.PlayerInfo.KDA.split('/')[2]), 0)
+    return sumA
 }
 
 async function gFormPost(formID, playerList, serverInfo, serverCon, activeSocket) {
@@ -131,7 +231,7 @@ async function gFormPost(formID, playerList, serverInfo, serverCon, activeSocket
         const kdaSum = kda.reduce((a, b) => a + b, 0)
         const playerID = playerInfo.UniqueId
         const nameIntRegex = /<[0-9]. /g
-        const playerName = playerInfo.PlayerName.replace(nameIntRegex,"")
+        const playerName = playerInfo.PlayerName.replace(nameIntRegex, "")
         const playerCountInt = serverInfo.PlayerCount.split('/')[0]
         const thisServerName = serverInfo.ServerName
 
@@ -165,27 +265,39 @@ async function gFormPost(formID, playerList, serverInfo, serverCon, activeSocket
                 "entry.1863816147": thisGameId
             }
 
+            psql.sendData()
+
             axios.get(formUrl, {
                 params: sendObj
             })
-            .then(x => console.log(timeStamp, `Updated ${playerName} whose score is now ${kda[2]}`))
+                .then(x => console.log(timeStamp, `Updated ${playerName} whose score is now ${kda[2]}`))
 
 
         }
     }
 }
 
-function init() {
-    getServerFile((server) => {
-        // console.log(JSON.stringify(server))
-        rcon.spinServer(server, spinRateMS).then(activeSocket => {
-            setInterval(() => {
-                postScores(activeSocket, server)
-                iteration++
-            }, cycleRateMS)
-        })
-        
-    })
+async function waitMS(ms) {
+    // return await for better async stack trace support in case of errors.
+    return await new Promise(resolve => setTimeout(resolve, ms));
 }
 
-init()
+async function init() {
+    const serverFile = await getServerFile()
+    const psqlSettings = await getPSQLSettings()
+    let activeSocket = await rcon.spinServer(serverFile, spinRateMS)
+    
+    while (activeSocket.writable) {
+        const cycleRes = await postScores(activeSocket, psqlSettings)
+        await waitMS(cycleRateMS)
+        iteration++
+    }
+
+    activeSocket.end()
+    activeSocket.destroy()
+    return activeSocket
+
+}
+
+module.exports = {init, getPSQLSettings}
+
