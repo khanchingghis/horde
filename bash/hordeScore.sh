@@ -3,6 +3,6 @@
 
 hordeNodeDir="/root/horde/node"
 cd $hordeNodeDir
-scorePath=$hordeNodeDir'/score.js'
+scorePath=$hordeNodeDir'/index.js'
 npm i
-node score.js
+node $scorePath
