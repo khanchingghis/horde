@@ -9,6 +9,6 @@ remoteGameini="https://docs.google.com/spreadsheets/d/1xTNsaQoXIdYJWLzHBuojIwFnv
 localGameini="/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini"
 
 systemctl stop pavlov
-cd $localHordeDir
+cd $localHordeDir"bash/"
 ./updateAll.sh
 systemctl start pavlov
