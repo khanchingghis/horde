@@ -6,12 +6,13 @@ const rcon = require('./rcon')
 const servers = require('./servers')
 const { v4: uuidv4 } = require('uuid');
 const psql = require('./psql')
+const dMsg = require('./bot')
 
 const myFormID = '1FAIpQLScOi8_7neH_71KM1AuS2PL2ZIs794eNv1u4ZunEz8WFuXwyBg'
 
 let iteration = 0
-const spinRateMS = 4000
-const cycleRateMS = 4000
+const spinRateMS = 5000
+const cycleRateMS = 10000
 const logCyleInt = 1
 const logActiveCycleInt = 2
 
@@ -131,6 +132,9 @@ async function postScores(activeSocket, psqlSettings) {
     const thisServer = rcon.getServerInfo(activeSocket)
     if (!thisServer) return activeSocket
 
+    let isPlayerCountChanged = false
+    if (thisServer.playerList.length != playerList.length) isPlayerCountChanged = true
+
     playerList = thisServer.playerList
     thisServerInfo = thisServer.serverInfo.ServerInfo
     Object.assign(serverInfo, thisServerInfo)
@@ -156,7 +160,7 @@ async function postScores(activeSocket, psqlSettings) {
     const thisMap = serverInfo.MapLabel
     const prevMap = latestKDAs.MapLabel
 
-    if (allKDASum != prevKDASum) {
+    if ((allKDASum != prevKDASum) || isPlayerCountChanged) {
         //Score Change
 
         if ((allKDASum == 0 && allKDASum != prevKDASum) || thisMap != prevMap) {
@@ -168,25 +172,62 @@ async function postScores(activeSocket, psqlSettings) {
             latestKDAs.allKDASum = allKDASum
             latestKDAs.MapLabel = serverInfo.MapLabel
             latestKDAs.isNewRound = true
+            dMsg.sendDiscordMessage('New Game Starting!')
         }
 
-        const res = await psql.sendData(psqlSettings, playerList, serverInfo)
-            .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
-            .catch(e => console.log('SQL Error:', e))
+        // const res = await psql.sendData(psqlSettings, playerList, serverInfo)
+        //     .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
+        //     .catch(e => console.log('SQL Error:', e))
+
+        // fs.writeFileSync('./playerListEG.json',playerList)
+        // fs.writeFileSync('./serverInfoEG.json',serverInfo)
+
+        if (isPlayerCountChanged) {
+            const discordMsg = makeDiscordUpdateServerMessage(playerList,serverInfo)
+            const dRes = await dMsg.sendDiscordMessage(discordMsg)
+        }
+
         latestKDAs.allKDASum = allKDASum
-        return res
+        return serverInfo
     }
 
     else {
 
         if (iteration % logCyleInt == 0) {
-            console.log(timeStamp, 'No change. Players:', playerList.length)
+            console.log(timeStamp, 'No KDA change. Players:', playerList.length)
             // console.log(timeStamp, 'Round', serverInfo.RoundState)
         }
         return serverInfo
 
     }
 
+}
+
+function calcRound(playerList,serverInfo){
+    let round = 0
+    const kSum = serverInfo.KSum
+    const playerCount = playerList.length
+    const playerKills = kSum / playerCount
+    const roundGuess = Math.round(playerKills/4.5)
+    return roundGuess
+}
+
+function makeDiscordUpdateServerMessage(playerList,serverInfo){
+    let msg = ''
+    if (playerList.length > 0) {
+        let playersTxt = ''
+        try{
+            playersTxt = playerList.map(p => p.PlayerInfo.PlayerName + ' - KDA ' + [sumK(p), sumD(p), sumA(p)].join('/')).join('\n')
+        } catch(e){
+            console.log(e)
+        }
+        msg = `There are ${playerList.length} players on the server, playing on ${serverInfo.mapLabel} with ${serverInfo.KSum} kills so far! \n
+                ${playersTxt} \n`
+    } else {
+        msg = `There are now 0 players in the server.`
+    }
+    
+    return msg
 }
 
 function sumKDA(player) {
@@ -250,70 +291,13 @@ function sumAllD(playerList) {
 }
 
 function sumAllA(playerList) {
-    let allASum = sumA(playerList[2])
+    let allASum = sumA(playerList[0])
     if (playerList.length > 1) {
         allASum = playerList.reduce((a, b) => a + sumA(b), 0)
     }
     return allASum
 }
 
-
-async function gFormPost(formID, playerList, serverInfo, serverCon, activeSocket) {
-    const formUrl = `https://docs.google.com/forms/u/0/d/e/${formID}/formResponse`
-    const timeNow = new Date()
-    const timeStamp = timeNow.toISOString()
-
-    for (i = 0; i < playerList.length; i++) {
-        const playerInfo = playerList[i].PlayerInfo
-        const kda = playerInfo.KDA.split('/')
-        const kdaSum = kda.reduce((a, b) => a + b, 0)
-        const playerID = playerInfo.UniqueId
-        const nameIntRegex = /<[0-9]. /g
-        const playerName = playerInfo.PlayerName.replace(nameIntRegex, "")
-        const playerCountInt = serverInfo.PlayerCount.split('/')[0]
-        const thisServerName = serverInfo.ServerName
-
-        if (!latestKDAs.isNewRound && latestKDAs[playerID] && latestKDAs[playerID] == kdaSum) {
-            //No log
-            // if (iteration % logActiveCycleInt == 0) {
-            //     console.log(timeStamp, 'No KDA change. Skipping post...')
-            // }
-        } else {
-            latestKDAs[playerID] = kdaSum
-
-            if (latestKDAs.isNewRound || latestKDAs.MapLabel.trim() == '' || latestKDAs.GameMode.trim() == '') {
-                console.log(timeStamp, 'New round!')
-                latestKDAs.isNewRound = false
-                const fullServerDetails = await servers.getFullServerInfo(activeSocket)
-                latestKDAs.MapLabel = fullServerDetails.serverInfo.ServerInfo.mapLabel
-                latestKDAs.GameMode = fullServerDetails.serverInfo.ServerInfo.gameMode
-            }
-
-            const sendObj = {
-                "entry.748779749": playerName,
-                "entry.1044143160": playerID,
-                "entry.1011362435": playerInfo.TeamId,
-                "entry.1974831837": latestKDAs.MapLabel,
-                "entry.530914442": kda[0],
-                "entry.1923937347": kda[1],
-                "entry.1339739528": kda[2],
-                "entry.1078658169": thisServerName,
-                "entry.742200735": latestKDAs.GameMode,
-                "entry.686146210": playerCountInt,
-                "entry.1863816147": thisGameId
-            }
-
-            psql.sendData()
-
-            axios.get(formUrl, {
-                params: sendObj
-            })
-                .then(x => console.log(timeStamp, `Updated ${playerName} whose score is now ${kda[2]}`))
-
-
-        }
-    }
-}
 
 async function waitMS(ms) {
     // return await for better async stack trace support in case of errors.
