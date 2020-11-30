@@ -217,12 +217,14 @@ function makeDiscordUpdateServerMessage(playerList,serverInfo){
     if (playerList.length > 0) {
         let playersTxt = ''
         try{
-            playersTxt = playerList.map(p => p.PlayerInfo.PlayerName + ' - KDA ' + [sumK(p), sumD(p), sumA(p)].join('/')).join('\n')
+            const nameIntRegex = /<[0-9]. /g
+            playersTxt = playerList.map(p => p.PlayerInfo.PlayerName.replace(nameIntRegex,'') + ' - KDA ' + [sumK(p), sumD(p), sumA(p)].join('/')).join('\n')
         } catch(e){
             console.log(e)
         }
-        msg = `There are ${playerList.length} players on the server, playing on ${serverInfo.mapLabel} with ${serverInfo.KSum} kills so far! \n
-                ${playersTxt} \n`
+        msg = `There ${playerList.length > 1 ? 'are' : 'is'} now ${playerList.length} players in the server, 
+                playing on ${serverInfo.mapLabel} 
+                with ${serverInfo.KSum} kills so far! \n${playersTxt} \n\n`
     } else {
         msg = `There are now 0 players in the server.`
     }
