@@ -222,9 +222,8 @@ function makeDiscordUpdateServerMessage(playerList,serverInfo){
         } catch(e){
             console.log(e)
         }
-        msg = `There ${playerList.length > 1 ? 'are' : 'is'} now ${playerList.length} players in the server, 
-                playing on ${serverInfo.mapLabel} 
-                with ${serverInfo.KSum} kills so far! \n${playersTxt} \n\n`
+        msg = `There ${playerList.length > 1 ? 'are' : 'is'} now ${playerList.length} ${playerList.length > 1 ? 'players' : 'player'} in the server, ` +  
+                `playing on ${serverInfo.mapLabel} with ${serverInfo.KSum} kills so far! \n${playersTxt} \n \n`
     } else {
         msg = `There are now 0 players in the server.`
     }
