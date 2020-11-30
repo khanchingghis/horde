@@ -175,9 +175,9 @@ async function postScores(activeSocket, psqlSettings) {
             dMsg.sendDiscordMessage('New Game Starting!')
         }
 
-        // const res = await psql.sendData(psqlSettings, playerList, serverInfo)
-        //     .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
-        //     .catch(e => console.log('SQL Error:', e))
+        const res = await psql.sendData(psqlSettings, playerList, serverInfo)
+            .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
+            .catch(e => console.log('SQL Error:', e))
 
         // fs.writeFileSync('./playerListEG.json',playerList)
         // fs.writeFileSync('./serverInfoEG.json',serverInfo)
