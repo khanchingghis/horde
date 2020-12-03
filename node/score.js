@@ -70,12 +70,12 @@ function getPSQLSettings() {
                     });
                 });
 
-                }
-
-    } catch (err) {
-                console.error(err)
             }
-        })
+
+        } catch (err) {
+            console.error(err)
+        }
+    })
 }
 
 
@@ -103,26 +103,20 @@ function getServerFile() {
 
                 console.log(`No ${serverFileName} found. Creating...`)
 
-                rl.question("IP?", function (ip) {
-                    rl.question("Database?", function (db) {
-                        rl.question("User ? ", function (port) {
-                        rl.question("Port ? ", function (port) {
-                            rl.question("Password ? ", function (password) {
-                                const serverDetails = {
-                                    "ip": ip,
-                                    "port": port,
-                                    "password": password,
-                                    "database":db
-                                }
-                                fs.writeFileSync(serverPath, JSON.stringify(serverDetails))
-                                rl.close();
-                            });
-
+                rl.question("Port ? ", function (port) {
+                    rl.question("Password ? ", function (password) {
+                        rl.question("Discord Webhook (leave blank for none) ? ", function (webhook) {
+                            const serverDetails = {
+                                "ip": "localhost",
+                                "port": port,
+                                "password": password,
+                                "webhook": webhook
+                            }
+                            fs.writeFileSync(serverPath, JSON.stringify(serverDetails))
+                            rl.close();
                         });
-
                     })
-                })
-                })
+                });
 
             }
 
@@ -132,10 +126,12 @@ function getServerFile() {
     })
 }
 
-async function postScores(activeSocket, psqlSettings) {
+async function postScores(activeSocket, psqlSettings, serverFile) {
 
     const timeNow = new Date()
     const timeStamp = timeNow.toISOString()
+
+    const webhookUrl = serverFile.webhook
 
     const thisServer = rcon.getServerInfo(activeSocket)
     if (!thisServer) return activeSocket
@@ -173,26 +169,23 @@ async function postScores(activeSocket, psqlSettings) {
 
         if ((allKDASum == 0 && allKDASum != prevKDASum) || thisMap != prevMap) {
             //New Game
-            const fullServerDetails = await servers.getFullServerInfo(activeSocket).catch(e=>console.log(e))
+            const fullServerDetails = await servers.getFullServerInfo(activeSocket).catch(e => console.log)
             Object.assign(serverInfo, fullServerDetails.serverInfo.ServerInfo)
             latestKDAs.mapLabel = serverInfo.mapLabel
             serverInfo.thisGameId = uuidv4()
             latestKDAs.allKDASum = allKDASum
             latestKDAs.MapLabel = serverInfo.MapLabel
             latestKDAs.isNewRound = true
-            dMsg.sendDiscordMessage('New Game Starting!')
+            dMsg.sendDiscordMessage('New Game Starting!', webhookUrl)
         }
 
         const res = await psql.sendData(psqlSettings, playerList, serverInfo)
             .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
             .catch(e => console.log('SQL Error:', e))
 
-        // fs.writeFileSync('./playerListEG.json',playerList)
-        // fs.writeFileSync('./serverInfoEG.json',serverInfo)
-
-        if (isPlayerCountChanged) {
-            const discordMsg = makeDiscordUpdateServerMessage(playerList,serverInfo)
-            const dRes = await dMsg.sendDiscordMessage(discordMsg)
+        if (webhookUrl && isPlayerCountChanged) {
+            const discordMsg = makeDiscordUpdateServerMessage(playerList, serverInfo)
+            const dRes = await dMsg.sendDiscordMessage(discordMsg, webhookUrl)
         }
 
         latestKDAs.allKDASum = allKDASum
@@ -211,39 +204,39 @@ async function postScores(activeSocket, psqlSettings) {
 
 }
 
-function calcRound(playerList,serverInfo){
+function calcRound(playerList, serverInfo) {
     let round = 0
     const kSum = serverInfo.KSum
     const playerCount = playerList.length
     const playerKills = kSum / playerCount
-    const roundGuess = Math.round(playerKills/4.5)
+    const roundGuess = Math.round(playerKills / 4.5)
     return roundGuess
 }
 
-function makeDiscordUpdateServerMessage(playerList,serverInfo){
+function makeDiscordUpdateServerMessage(playerList, serverInfo) {
     let msg = ''
     if (playerList.length > 0) {
         let playersTxt = ''
-        try{
+        try {
             const nameIntRegex = /<[0-9]. /g
-            playersTxt = playerList.map(p => p.PlayerInfo.PlayerName.replace(nameIntRegex,'') + ' - KDA ' + [sumK(p), sumD(p), sumA(p)].join('/')).join('\n')
-        } catch(e){
+            playersTxt = playerList.map(p => p.PlayerInfo.PlayerName.replace(nameIntRegex, '') + ' - KDA ' + [sumK(p), sumD(p), sumA(p)].join('/')).join('\n')
+        } catch (e) {
             console.log(e)
         }
-        msg = `There ${playerList.length > 1 ? 'are' : 'is'} now **${playerList.length} ${playerList.length > 1 ? 'players' : 'player'} ** in the server, ` +  
-                `playing on ** ${serverInfo.mapLabel} ** with ${serverInfo.KSum} kills so far! ` + 
-                `\n >>> ${playersTxt} \n\n`
+        msg = `There ${playerList.length > 1 ? 'are' : 'is'} now **${playerList.length} ${playerList.length > 1 ? 'players' : 'player'} ** in the server, ` +
+            `playing on ** ${serverInfo.mapLabel} ** with ${serverInfo.KSum} kills so far! ` +
+            `\n >>> ${playersTxt} \n\n`
     } else {
         msg = `There are now 0 players in the server.`
     }
-    
+
     return msg
 }
 
 function sumKDA(player) {
     try {
         return player.PlayerInfo.KDA.split('/').reduce((a, b) => a + parseInt(b), 0)
-    } catch(e) {
+    } catch (e) {
         console.log(e)
         return 0
     }
@@ -252,7 +245,7 @@ function sumKDA(player) {
 function sumK(player) {
     try {
         return parseInt(player.PlayerInfo.KDA.split('/')[0])
-    } catch(e) {
+    } catch (e) {
         console.log(e)
         return 0
     }
@@ -261,7 +254,7 @@ function sumK(player) {
 function sumD(player) {
     try {
         return parseInt(player.PlayerInfo.KDA.split('/')[1])
-    } catch(e) {
+    } catch (e) {
         console.log(e)
         return 0
     }
@@ -270,7 +263,7 @@ function sumD(player) {
 function sumA(player) {
     try {
         return parseInt(player.PlayerInfo.KDA.split('/')[2])
-    } catch(e) {
+    } catch (e) {
         console.log(e)
         return 0
     }
@@ -318,9 +311,9 @@ async function init() {
     const serverFile = await getServerFile()
     const psqlSettings = await getPSQLSettings()
     let activeSocket = await rcon.spinServer(serverFile, spinRateMS)
-    
+
     while (activeSocket.writable) {
-        const cycleRes = await postScores(activeSocket, psqlSettings)
+        const cycleRes = await postScores(activeSocket, psqlSettings, serverFile)
         await waitMS(cycleRateMS)
         iteration++
     }
@@ -331,5 +324,5 @@ async function init() {
 
 }
 
-module.exports = {init, getPSQLSettings}
+module.exports = { init, getPSQLSettings }
 
