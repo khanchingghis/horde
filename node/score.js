@@ -103,18 +103,26 @@ function getServerFile() {
 
                 console.log(`No ${serverFileName} found. Creating...`)
 
-                rl.question("Port ? ", function (port) {
-                    rl.question("Password ? ", function (password) {
-                        const serverDetails = {
-                            "ip": "localhost",
-                            "port": port,
-                            "password": password
-                        }
-                        fs.writeFileSync(serverPath, JSON.stringify(serverDetails))
-                        rl.close();
-                    });
+                rl.question("IP?", function (ip) {
+                    rl.question("Database?", function (db) {
+                        rl.question("User ? ", function (port) {
+                        rl.question("Port ? ", function (port) {
+                            rl.question("Password ? ", function (password) {
+                                const serverDetails = {
+                                    "ip": ip,
+                                    "port": port,
+                                    "password": password,
+                                    "database":db
+                                }
+                                fs.writeFileSync(serverPath, JSON.stringify(serverDetails))
+                                rl.close();
+                            });
 
-                });
+                        });
+
+                    })
+                })
+                })
 
             }
 
