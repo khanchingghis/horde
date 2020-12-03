@@ -5,6 +5,8 @@ async function sendData(psqlSettings, playerList, serverInfo) {
     
     const nameIntRegex = /<[0-9]. /g
 
+    const storeTable = psqlSettings.table
+
     let playerListFormatted = playerList.map(e => {
         const kda = e.PlayerInfo.KDA.split('/')
         e.PlayerInfo.k=parseInt(kda[0])
@@ -21,7 +23,7 @@ async function sendData(psqlSettings, playerList, serverInfo) {
     const client = new Client(psqlSettings)
 
     client.connect().then(x => {
-        client.query('INSERT INTO raw_scores (playerList, serverInfo) VALUES ($1, $2)',[playerListFormatted,serverInfoFormatted]).then(y=>{
+        client.query(`INSERT INTO ${storeTable} (playerList, serverInfo) VALUES ($1, $2)`,[playerListFormatted,serverInfoFormatted]).then(y=>{
             client.end()
         })
     })

@@ -165,7 +165,7 @@ async function postScores(activeSocket, psqlSettings) {
 
         if ((allKDASum == 0 && allKDASum != prevKDASum) || thisMap != prevMap) {
             //New Game
-            const fullServerDetails = await servers.getFullServerInfo(activeSocket)
+            const fullServerDetails = await servers.getFullServerInfo(activeSocket).catch(e=>console.log(e))
             Object.assign(serverInfo, fullServerDetails.serverInfo.ServerInfo)
             latestKDAs.mapLabel = serverInfo.mapLabel
             serverInfo.thisGameId = uuidv4()
