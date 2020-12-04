@@ -169,6 +169,7 @@ async function postScores(activeSocket, psqlSettings, serverFile) {
 
         if ((allKDASum == 0 && allKDASum != prevKDASum) || thisMap != prevMap) {
             //New Game
+            await waitMS(3000)
             const fullServerDetails = await servers.getFullServerInfo(activeSocket).catch(e => console.log)
             Object.assign(serverInfo, fullServerDetails.serverInfo.ServerInfo)
             latestKDAs.mapLabel = serverInfo.mapLabel
@@ -219,13 +220,13 @@ function makeDiscordUpdateServerMessage(playerList, serverInfo) {
         let playersTxt = ''
         try {
             const nameIntRegex = /<[0-9]. /g
-            playersTxt = playerList.map(p => p.PlayerInfo.PlayerName.replace(nameIntRegex, '') + ' - KDA ' + [sumK(p), sumD(p), sumA(p)].join('/')).join('\n')
+            playersTxt = playerList.map(p => '_' + p.PlayerInfo.PlayerName.replace(nameIntRegex, '') + '_ - KDA ' + [sumK(p), sumD(p), sumA(p)].join('/')).join('\n')
         } catch (e) {
             console.log(e)
         }
         msg = `There ${playerList.length > 1 ? 'are' : 'is'} now **${playerList.length} ${playerList.length > 1 ? 'players' : 'player'} ** in the server, ` +
             `playing on ** ${serverInfo.mapLabel} ** with ${serverInfo.KSum} kills so far! ` +
-            `\n --- ${playersTxt} \n --- \n`
+            `\n${playersTxt}\n`
     } else {
         msg = `There are now 0 players in the server.`
     }
