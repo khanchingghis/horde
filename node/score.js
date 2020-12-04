@@ -177,7 +177,7 @@ async function postScores(activeSocket, psqlSettings, serverFile) {
             latestKDAs.allKDASum = allKDASum
             latestKDAs.MapLabel = serverInfo.MapLabel
             latestKDAs.isNewRound = true
-            dMsg.sendDiscordMessage('New Game Starting!', webhookUrl)
+            dMsg.sendDiscordMessage(`New Game Starting on ${serverInfo.MapLabel}!`, webhookUrl)
         }
 
         const res = await psql.sendData(psqlSettings, playerList, serverInfo)
