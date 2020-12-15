@@ -1,6 +1,6 @@
 #!/bin/bash
 
-remoteGameini="https://docs.google.com/spreadsheets/d/${G_SHEET_ID}/export?format=csv"
+remoteGameini="https://docs.google.com/spreadsheets/d/$G_SHEET_ID/export?format=csv"
 localGameini="/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini"
 
 systemctl stop pavlov
