@@ -21,6 +21,24 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\node\\psql.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "API",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\node\\apiServer.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Send API",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\node\\tests\\testSendAPI.js"
         }
     ]
 }

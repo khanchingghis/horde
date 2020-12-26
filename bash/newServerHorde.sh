@@ -22,3 +22,5 @@ sudo apt-get install -y npm
 
 echo "Setting Up Server..."
 bashDir=$localHordeDir"bash/"
+cd $bashDir
+./newServerInstaller.sh

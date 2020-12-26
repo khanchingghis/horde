@@ -17,10 +17,3 @@ echo "Updating Maps..."
 cd $localMapsDir
 unzip -qq -o "*.zip" -d $mapsLocalFolder
 chmod +rx -R $mapsLocalFolder
-
-echo "Updating Game.ini..."
-curl -s -L $remoteGameini > $localGameini
-chmod +rx $localGameini
-sed -i 's/""/-quote-/gi' $localGameini
-sed -i 's/"//gi' $localGameini
-sed -i 's/-quote-/"/gi' $localGameini
