@@ -11,7 +11,7 @@ const psql = require('./psql');
 const { getPSQLSettings } = require("./score");
 const util = require('util');
 
-const host = 'localhost';
+const host = '0.0.0.0';
 const port = 8000;
 const app = express()
 
@@ -70,8 +70,6 @@ app.get('/getGameIni', (req, res, next) => {
         next(e.message)
     }
 })
-
-
 
 app.post('/writeGameIni', (req, res, next) => {
 

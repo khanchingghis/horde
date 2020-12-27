@@ -12,10 +12,3 @@ echo "Updating Repo..."
 cd $localInstallDir
 git clone $hordeRepo || cd $localHordeDir && git fetch origin master && git reset --hard origin/master
 chmod +rx -R $localHordeDir
-
-echo "Updating Game.ini..."
-curl -s -L $remoteGameini > $localGameini
-chmod +rx $localGameini
-sed -i 's/""/-quote-/gi' $localGameini
-sed -i 's/"//gi' $localGameini
-sed -i 's/-quote-/"/gi' $localGameini
