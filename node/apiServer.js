@@ -15,12 +15,12 @@ const host = 'localhost';
 const port = 8000;
 const app = express()
 
-// const rconPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/RconSettings.txt'
-const rconPath = path.resolve(__dirname, './tests/RconSettings.txt')
+// const rconPath = path.resolve(__dirname, './tests/RconSettings.txt')
+// const gameIniPath = path.resolve(__dirname, './tests/Game.ini')
 
+const rconPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/RconSettings.txt'
 const modsPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt'
-// const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
-const gameIniPath = path.resolve(__dirname, './tests/Game.ini')
+const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -71,6 +71,8 @@ app.get('/getGameIni', (req, res, next) => {
     }
 })
 
+
+
 app.post('/writeGameIni', (req, res, next) => {
 
     try {
@@ -109,6 +111,24 @@ app.post('/writePassword', (req, res, next) => {
             'status': 'success',
             'writedata': rconFileTxt,
             'writepath': rconPath
+        })
+        next();
+    } catch (e) {
+        res.sendStatus(404)
+        next(e.message)
+    }
+})
+
+app.get('/updateMaps', (req, res, next) => {
+
+    const updateMapsPath = '/root/horde/bash/updateAll.sh'
+    try {
+        shell.exec('systemctl stop pavlovserver')
+        shell.exec('sh ' + updateMapsPath)
+        shell.exec('systemctl start pavlovserver')
+        res.send({
+            'status': 'success',
+            'event': 'updated maps and repo'
         })
         next();
     } catch (e) {
