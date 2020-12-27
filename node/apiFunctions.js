@@ -2,7 +2,6 @@
 function JSONToIni(json) {
     let res = ''
     const keys = Object.keys(json)
-    console.log(keys)
     for (const key of keys) {
         const thisValue = json[key]
         if (key=='Maps') {

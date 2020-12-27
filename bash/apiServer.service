@@ -1,0 +1,11 @@
+[Unit]
+Description=Horde API
+
+[Service]
+Type=simple
+ExecStart=/root/horde/bash/apiServer.sh
+RestartSec=5
+Restart=always
+
+[Install]
+WantedBy = multi-user.target

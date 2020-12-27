@@ -6,6 +6,10 @@ const path = require("path");
 const express = require("express")
 const bodyParser = require("body-parser")
 const apiF = require('./apiFunctions')
+const cors = require("cors");
+const psql = require('./psql');
+const { getPSQLSettings } = require("./score");
+const util = require('util');
 
 const host = 'localhost';
 const port = 8000;
@@ -18,65 +22,132 @@ const modsPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt'
 // const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
 const gameIniPath = path.resolve(__dirname, './tests/Game.ini')
 
-
-const passFile = fs.readFileSync(rconPath).toString()
-const passTxt = passFile.split('=')[1].split('\n')[0]
-const md5Pass = md5(passTxt)
-console.log(md5Pass)
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cors())
 
-app.use((req, res, next) => {
-    console.log(JSON.stringify(req.headers))
+let clientInfo = {}
+let psqlSettings = {}
+
+
+//Check Pass
+app.use(async (req, res, next) => {
     try {
+
+        psqlSettings = await getPSQLSettings()
+        clientInfo = {
+            'method': req.method,
+            'headers': req.headers,
+            'url': req.url
+        }
+
+        const passFile = fs.readFileSync(rconPath).toString()
+        const passTxt = passFile.split('=')[1].split('\n')[0]
+        const md5Pass = md5(passTxt)
         if (req.get('HordePwd') == md5Pass) {
             next()
         } else {
-            console.log('Incorrect Password')
-            res.status(403).end()
+            const errMsg = 'Incorrect Password'
+            res.sendStatus(403)
+            next(errMsg)
         }
     } catch (e) {
-        console.log('Error')
-        res.status(403).end()
+        res.sendStatus(403)
+        next(e.message)
     }
 })
 
-app.get('/getGameIni', (req, res) => {
+app.get('/getGameIni', (req, res, next) => {
 
     try {
-    const gameIniTxt = fs.readFileSync(gameIniPath).toString()
-    res.writeHead(200);
-    res.end(
-        gameIniTxt
-    );
-    } catch(e){
-        res.status(404).end()
+        const gameIniTxt = fs.readFileSync(gameIniPath).toString()
+        res.send(
+            apiF.iniToJSON(gameIniTxt)
+        )
+        next()
+    } catch (e) {
+        res.sendStatus(404)
+        next(e.message)
     }
 })
 
-app.post('/writeGameIni', (req, res) => {
+app.post('/writeGameIni', (req, res, next) => {
 
     try {
-    const gameini = req.body.gameini
 
-    let writeGameIni = '[/Script/Pavlov.DedicatedServer]\n'
-    writeGameIni += apiF.JSONToIni(gameini)
+        const gameini = req.body.gameini
+        if (!gameini) throw new Error('No Game Ini Body')
 
-    console.log(writeGameIni)
-    shell.exec('systemctl stop pavlovserver')
-    fs.writeFileSync(gameIniPath, writeGameIni)
-    shell.exec('systemctl start pavlovserver')
-    res.writeHead(200);
-    res.end(
-        `Written: ${writeGameIni} to \n${gameIniPath}`
-    );
-} catch(e){
-    res.status(404).end()
-}
+        let writeGameIni = '[/Script/Pavlov.DedicatedServer]\n'
+        writeGameIni += apiF.JSONToIni(gameini)
+
+        shell.exec('systemctl stop pavlovserver')
+        fs.writeFileSync(gameIniPath, writeGameIni)
+        shell.exec('systemctl start pavlovserver')
+        res.send({
+            'status': 'success',
+            'writedata': writeGameIni,
+            'writepath': gameIniPath
+        })
+        next();
+    } catch (e) {
+        res.sendStatus(404)
+        next(e.message)
+    }
+})
+
+app.post('/writePassword', (req, res, next) => {
+
+    try {
+        const newPassword = req.body.newpass
+
+        const rconFileTxt = `Password=${newPassword}\nPort=9100`
+        shell.exec('systemctl stop pavlovserver')
+        fs.writeFileSync(rconPath, rconFileTxt)
+        shell.exec('systemctl start pavlovserver')
+        res.send({
+            'status': 'success',
+            'writedata': rconFileTxt,
+            'writepath': rconPath
+        })
+        next();
+    } catch (e) {
+        res.sendStatus(404)
+        next(e.message)
+    }
+})
+
+//Default Error
+app.use((req, res, next) => {
+    if (!req.route) {
+        res.sendStatus(404)
+        next('Bad Route')
+    }
+    next()
+});
+
+//Final Log
+app.use(async (req, res, next) => {
+    console.log(res.statusCode + ' ' + res.statusMessage)
+    const resultData = {
+        'status': res.statusCode
+    }
+    const psres = await psql.logData(psqlSettings, clientInfo, req.body, resultData)
+    next()
+})
+
+//Error Handler
+app.use(async (err, req, res, next) => {
+    console.log(res.statusCode + ' ' + err)
+
+    const resultData = {
+        'status': res.statusCode,
+        'error': err
+    }
+    const psres = await psql.logData(psqlSettings, clientInfo, req.body, resultData)
+    next()
 })
 
 app.listen(port, host, () => {
     console.log(`Server is running on http://${host}:${port}`);
 });
-

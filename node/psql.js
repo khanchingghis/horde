@@ -26,4 +26,15 @@ async function sendData(psqlSettings, playerList, serverInfo) {
     })
 }
 
-module.exports = {sendData}
+
+async function logData(psqlSettings, clientId, data, result){
+    const client = new Client(psqlSettings)
+
+    client.connect().then(x => {
+        client.query(`INSERT INTO logs (client, body_data, result) VALUES ($1, $2, $3)`,[clientId,data, result]).then(y=>{
+            client.end()
+        })
+    })
+}
+
+module.exports = {sendData, logData}
