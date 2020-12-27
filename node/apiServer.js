@@ -81,9 +81,9 @@ app.post('/writeGameIni', (req, res, next) => {
         let writeGameIni = '[/Script/Pavlov.DedicatedServer]\n'
         writeGameIni += apiF.JSONToIni(gameini)
 
-        shell.exec('systemctl stop pavlovserver')
+        shell.exec('systemctl stop pavlov')
         fs.writeFileSync(gameIniPath, writeGameIni)
-        shell.exec('systemctl start pavlovserver')
+        shell.exec('systemctl start pavlov')
         res.send({
             'status': 'success',
             'writedata': writeGameIni,
@@ -102,9 +102,9 @@ app.post('/writePassword', (req, res, next) => {
         const newPassword = req.body.newpass
 
         const rconFileTxt = `Password=${newPassword}\nPort=9100`
-        shell.exec('systemctl stop pavlovserver')
+        shell.exec('systemctl stop pavlov')
         fs.writeFileSync(rconPath, rconFileTxt)
-        shell.exec('systemctl start pavlovserver')
+        shell.exec('systemctl start pavlov')
         res.send({
             'status': 'success',
             'writedata': rconFileTxt,
@@ -121,9 +121,9 @@ app.get('/updateMaps', (req, res, next) => {
 
     const updateMapsPath = '/root/horde/bash/updateAll.sh'
     try {
-        shell.exec('systemctl stop pavlovserver')
+        shell.exec('systemctl stop pavlov')
         shell.exec('sh ' + updateMapsPath)
-        shell.exec('systemctl start pavlovserver')
+        shell.exec('systemctl start pavlov')
         res.send({
             'status': 'success',
             'event': 'updated maps and repo'
