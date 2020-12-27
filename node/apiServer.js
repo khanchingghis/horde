@@ -34,8 +34,16 @@ let psqlSettings = {}
 app.use(async (req, res, next) => {
     try {
 
+        const parseIp = (req) =>
+            (typeof req.headers['x-forwarded-for'] === 'string'
+                && req.headers['x-forwarded-for'].split(',').shift())
+            || req.connection?.remoteAddress
+            || req.socket?.remoteAddress
+            || req.connection?.socket?.remoteAddress
+
         psqlSettings = await getPSQLSettings()
         clientInfo = {
+            'clientip': parseIp(req),
             'method': req.method,
             'headers': req.headers,
             'url': req.url
