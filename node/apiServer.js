@@ -119,14 +119,12 @@ app.post('/writePassword', (req, res, next) => {
 
 app.get('/updateMaps', (req, res, next) => {
 
-    const updateMapsPath = '/root/horde/bash/updateAll.sh'
+    const updateAllPath = '/root/horde/bash/updateAllRestartPavlov.sh'
     try {
-        shell.exec('systemctl stop pavlov')
-        shell.exec('sh ' + updateMapsPath)
-        shell.exec('systemctl start pavlov')
+        shell.exec(updateAllPath,{},()=>console.log('Done'))
         res.send({
             'status': 'success',
-            'event': 'updated maps and repo'
+            'event': 'updating maps and repo'
         })
         next();
     } catch (e) {

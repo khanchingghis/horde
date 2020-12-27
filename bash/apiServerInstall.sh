@@ -1,5 +1,9 @@
 #!/bin/bash
 
+hordeNodeDir="/root/horde/node"
+cd $hordeNodeDir
+npm i
+
 install_service() {
     hordeBashDir="/root/horde/bash"
     serviceName=$1
