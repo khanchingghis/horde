@@ -6,7 +6,7 @@ function JSONToIni(json) {
         const thisValue = json[key]
         if (key=='Maps') {
             for (const map of thisValue) {
-                res += `MapRotation=(MapId="${map.MapId}", GameMode="${map.GameMode}")`
+                res += `MapRotation=(MapId="${map.MapId}", GameMode="${map.GameMode}")\n`
             }
         } else {
             res += `${key}=${thisValue}\n`
