@@ -15,12 +15,12 @@ const host = '0.0.0.0';
 const port = 8001;
 const app = express()
 
-const rconPath = path.resolve(__dirname, './tests/RconSettings.txt')
-const gameIniPath = path.resolve(__dirname, './tests/Game.ini')
+// const rconPath = path.resolve(__dirname, './tests/RconSettings.txt')
+// const gameIniPath = path.resolve(__dirname, './tests/Game.ini')
 
-// const rconPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/RconSettings.txt'
-// const modsPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt'
-// const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
+const rconPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/RconSettings.txt'
+const modsPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt'
+const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
