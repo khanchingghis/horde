@@ -31,7 +31,7 @@ async function logData(psqlSettings, clientId, data, result){
     const client = new Client(psqlSettings)
 
     client.connect().then(x => {
-        client.query(`INSERT INTO logs (client, body_data, result) VALUES ($1, $2, $3)`,[clientId,data, result]).then(y=>{
+        client.query(`INSERT INTO logs (client, body_data, result) VALUES ($1, $2, $3)`,[clientId, data, result]).then(y=>{
             client.end()
         })
     })

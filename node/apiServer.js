@@ -12,15 +12,15 @@ const { getPSQLSettings } = require("./score");
 const util = require('util');
 
 const host = '0.0.0.0';
-const port = 8000;
+const port = 8001;
 const app = express()
 
-// const rconPath = path.resolve(__dirname, './tests/RconSettings.txt')
-// const gameIniPath = path.resolve(__dirname, './tests/Game.ini')
+const rconPath = path.resolve(__dirname, './tests/RconSettings.txt')
+const gameIniPath = path.resolve(__dirname, './tests/Game.ini')
 
-const rconPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/RconSettings.txt'
-const modsPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt'
-const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
+// const rconPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/RconSettings.txt'
+// const modsPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt'
+// const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -67,9 +67,9 @@ app.get('/getGameIni', (req, res, next) => {
 
     try {
         const gameIniTxt = fs.readFileSync(gameIniPath).toString()
-        res.send(
-            apiF.iniToJSON(gameIniTxt)
-        )
+        const responseObj = apiF.iniToJSON(gameIniTxt)
+        res.send(responseObj)
+        res.sentObj = responseObj
         next()
     } catch (e) {
         res.sendStatus(404)
@@ -90,11 +90,13 @@ app.post('/writeGameIni', (req, res, next) => {
         shell.exec('systemctl stop pavlov')
         fs.writeFileSync(gameIniPath, writeGameIni)
         shell.exec('systemctl start pavlov')
-        res.send({
+        const responseObj = {
             'status': 'success',
             'writedata': writeGameIni,
             'writepath': gameIniPath
-        })
+        }
+        res.send(responseObj)
+        res.sentObj = responseObj
         next();
     } catch (e) {
         res.sendStatus(404)
@@ -111,11 +113,13 @@ app.post('/writePassword', (req, res, next) => {
         shell.exec('systemctl stop pavlov')
         fs.writeFileSync(rconPath, rconFileTxt)
         shell.exec('systemctl start pavlov')
-        res.send({
+        const responseObj = {
             'status': 'success',
             'writedata': rconFileTxt,
             'writepath': rconPath
-        })
+        }
+        res.send(responseObj)
+        res.sentObj = responseObj
         next();
     } catch (e) {
         res.sendStatus(404)
@@ -128,10 +132,12 @@ app.get('/updateMaps', (req, res, next) => {
     const updateAllPath = '/root/horde/bash/updateAllRestartPavlov.sh'
     try {
         shell.exec(updateAllPath,{},()=>console.log('Done'))
-        res.send({
+        const responseObj = {
             'status': 'success',
             'event': 'updating maps and repo'
-        })
+        }
+        res.send(responseObj)
+        res.sentObj = responseObj
         next();
     } catch (e) {
         res.sendStatus(404)
@@ -150,9 +156,10 @@ app.use((req, res, next) => {
 
 //Final Log
 app.use(async (req, res, next) => {
-    console.log(res.statusCode + ' ' + res.statusMessage)
+    console.log(`${req.path} - ${res.statusCode} - ${res.statusMessage}`)
     const resultData = {
-        'status': res.statusCode
+        'status': res.statusCode,
+        'body': res.sentObj || 'undefined'
     }
     const psres = await psql.logData(psqlSettings, clientInfo, req.body, resultData)
     next()
@@ -164,7 +171,8 @@ app.use(async (err, req, res, next) => {
 
     const resultData = {
         'status': res.statusCode,
-        'error': err
+        'error': err,
+        'body': res.sentObj || 'undefined'
     }
     const psres = await psql.logData(psqlSettings, clientInfo, req.body, resultData)
     next()

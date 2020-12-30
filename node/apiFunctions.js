@@ -16,7 +16,7 @@ function JSONToIni(json) {
 }
 
 function iniToJSON(iniTxt){
-    let jsonRes = {}
+    let jsonRes = {'ServerName':'[HORDE]','Maps':[]}
     const iniLines = iniTxt.split('\n').map(line => line.trim())
     for (const line of iniLines){
         if ( line.startsWith('#') || line.startsWith(';') || line.startsWith('[') ) continue
@@ -28,7 +28,7 @@ function iniToJSON(iniTxt){
             } else if (thisLine.length > 2 && thisKey == 'MapRotation'){
                 const thisMap = thisLine[2].split(',')[0]
                 const thisGameMode = thisLine[3].replace(')',"")
-                jsonRes[thisKey] = {'MapId':thisMap, 'GameMode':thisGameMode}
+                jsonRes.Maps.push({'MapId':thisMap, 'GameMode':thisGameMode})
             } else {
                 continue
             }
