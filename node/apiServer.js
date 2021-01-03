@@ -11,9 +11,17 @@ const psql = require('./psql');
 const { getPSQLSettings } = require("./score");
 const util = require('util');
 
+const https = require('https')
+
 const host = '0.0.0.0';
 const port = 8001;
 const app = express()
+
+const privateKeyPath = path.resolve(__dirname, './creds/server.key')
+const certPath = path.resolve(__dirname, './creds/server.crt')
+const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+const certificate = fs.readFileSync(certPath, 'utf8');
+const serverCreds = { key: privateKey, cert: certificate };
 
 // const rconPath = path.resolve(__dirname, './tests/RconSettings.txt')
 // const gameIniPath = path.resolve(__dirname, './tests/Game.ini')
@@ -21,6 +29,8 @@ const app = express()
 const rconPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/RconSettings.txt'
 const modsPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt'
 const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
+
+let myIP = ''
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -40,11 +50,13 @@ app.use(async (req, res, next) => {
             (req.connection.socket ? req.connection.socket.remoteAddress : null)
 
         psqlSettings = await getPSQLSettings()
+
         clientInfo = {
             'clientip': clientip,
             'method': req.method,
             'headers': req.headers,
-            'url': req.url
+            'url': req.url,
+            'destinationip': myIP
         }
 
         const passFile = fs.readFileSync(rconPath).toString()
@@ -131,7 +143,7 @@ app.get('/updateMaps', (req, res, next) => {
 
     const updateAllPath = '/root/horde/bash/updateAllRestartPavlov.sh'
     try {
-        shell.exec(updateAllPath,{},()=>console.log('Done'))
+        shell.exec(updateAllPath, {}, () => console.log('Done'))
         const responseObj = {
             'status': 'success',
             'event': 'updating maps and repo'
@@ -169,6 +181,7 @@ app.use(async (req, res, next) => {
 app.use(async (err, req, res, next) => {
     console.log(res.statusCode + ' ' + err)
 
+    //log destination ip
     const resultData = {
         'status': res.statusCode,
         'error': err,
@@ -178,6 +191,11 @@ app.use(async (err, req, res, next) => {
     next()
 })
 
-app.listen(port, host, () => {
-    console.log(`Server is running on http://${host}:${port}`);
-});
+
+
+apiF.getMyIP().then(x => {
+    myIP = x
+    const httpsServer = https.createServer(serverCreds, app);
+    httpsServer.listen(port)
+    console.log(`Server is running on https://${host}:${port}, public ip ${myIP}`);
+})
