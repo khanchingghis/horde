@@ -11,17 +11,9 @@ const psql = require('./psql');
 const { getPSQLSettings } = require("./score");
 const util = require('util');
 
-const https = require('https')
-
 const host = '0.0.0.0';
 const port = 8001;
 const app = express()
-
-const privateKeyPath = path.resolve(__dirname, './creds/server.key')
-const certPath = path.resolve(__dirname, './creds/server.crt')
-const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
-const certificate = fs.readFileSync(certPath, 'utf8');
-const serverCreds = { key: privateKey, cert: certificate };
 
 // const rconPath = path.resolve(__dirname, './tests/RconSettings.txt')
 // const gameIniPath = path.resolve(__dirname, './tests/Game.ini')
@@ -193,9 +185,6 @@ app.use(async (err, req, res, next) => {
 
 
 
-apiF.getMyIP().then(x => {
-    myIP = x
-    const httpsServer = https.createServer(serverCreds, app);
-    httpsServer.listen(port)
-    console.log(`Server is running on https://${host}:${port}, public ip ${myIP}`);
-})
+app.listen(port, host, () => {
+    console.log(`Server is running on http://${host}:${port}`);
+});
