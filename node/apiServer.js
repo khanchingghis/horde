@@ -183,8 +183,11 @@ app.use(async (err, req, res, next) => {
     next()
 })
 
+apiF.getMyIP().then(x => {
+    myIP = x
 
+    app.listen(port, host, () => {
+        console.log(`Server is running on http://${host}:${port}, public ip is ${myIP}`);
+    });
+})
 
-app.listen(port, host, () => {
-    console.log(`Server is running on http://${host}:${port}`);
-});
