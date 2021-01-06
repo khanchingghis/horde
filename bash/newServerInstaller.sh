@@ -61,8 +61,8 @@ esac
 MAPS_CLEAN=$( IFS=$'\n'; echo "${ARRAY[*]}" )
 cat >/home/${INSTALL_USER}/${FOLD_NAME}/Pavlov/Saved/Config/LinuxServer/Game.ini <<EOL
 [/Script/Pavlov.DedicatedServer]
+ServerName="${SERVER_NAME}"
 bEnabled=true
-ServerName="${SERVERNAME}"
 MaxPlayers=${SERVER_MAX_PLAYERS}
 bSecured=true
 bCustomServer=true 
