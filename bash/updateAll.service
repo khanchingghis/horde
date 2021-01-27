@@ -3,7 +3,7 @@ Description=Update Pavlov Maps and Horde Scripts
 
 [Service]
 ExecStart=/root/horde/bash/updateAll.sh
-RestartSec="12h"
+RestartSec=12h
 
 [Install]
 WantedBy = multi-user.target
