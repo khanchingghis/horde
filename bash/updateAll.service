@@ -3,6 +3,7 @@ Description=Update Pavlov Maps and Horde Scripts
 
 [Service]
 ExecStart=/root/horde/bash/updateAll.sh
+Restart=always
 RestartSec=12h
 
 [Install]
