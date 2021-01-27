@@ -12,7 +12,7 @@ upstreamCommit=$(git rev-parse @{u})
 
 echo "Checking for updates..."
 cd $localHordeDir
-git fetch
+git remote update
 if [ $localCommit == $upstreamCommit ]; then
     echo "No updates"
 else
