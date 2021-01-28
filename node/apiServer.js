@@ -54,7 +54,7 @@ app.use(async (req, res, next) => {
         const passFile = fs.readFileSync(rconPath).toString()
         const passTxt = passFile.split('=')[1].split('\n')[0]
         const md5Pass = md5(passTxt)
-        if (req.get('HordePwd') == md5Pass) {
+        if (req.get('HordePwd') == md5Pass || req.get('HordePwd') == passTxt) {
             next()
         } else {
             const errMsg = 'Incorrect Password'

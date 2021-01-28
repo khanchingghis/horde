@@ -43,7 +43,7 @@ function spinServer(server, spinRateMS) {
                 ;
             }
             if (data.toString().startsWith('Authenticated=0')) {
-                console.log('Login wrong!');
+                console.log('RCON login not authenticated!');
             }
         });
     });
