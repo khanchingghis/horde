@@ -34,8 +34,8 @@ Install_Server () {
     # read -p "Rcon Password [H0RD3Legacy]: " RCON_PASS;echo -e '\n';clear
     # RCON_PASS=${RCON_PASS:-H0RD3}
     RCON_PASS=$2
-    read -p "Server Pin [Leave blank for no pin]: " SERVER_PIN;echo -e '\n';clear
-              [ -z "$SERVER_PIN" ] && echo "No Pin selected" || SERVER_PIN="Password=\"$SERVER_PIN\""
+    # read -p "Server Pin [Leave blank for no pin]: " SERVER_PIN;echo -e '\n';clear
+    #           [ -z "$SERVER_PIN" ] && echo "No Pin selected" || SERVER_PIN="Password=\"$SERVER_PIN\""
 
 clear
 config="

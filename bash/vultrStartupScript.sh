@@ -15,7 +15,7 @@ cd $hordeNodeDir
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
-echo "Installing Dependencies..."
+echo "Installing Node Dependencies..."
 npm i
 
 echo "Getting initial settings..."
