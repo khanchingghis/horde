@@ -25,8 +25,8 @@ async function installPavlov(){
     
     const psqlOptionsPath = thisPath + '/psqlOptions.json'
     const serverOptionsPath = thisPath + '/serverOptions.json'
-    fs.writeFileSync(psqlOptionsPath,psqlOptions)
-    fs.writeFileSync(serverOptionsPath,serverOptions)
+    fs.writeFileSync(psqlOptionsPath,JSON.stringify(psqlOptions))
+    fs.writeFileSync(serverOptionsPath,JSON.stringify(serverOptions))
 
     shell.exec(`/root/horde/bash/newServerInstaller.sh ${servername} ${rconpass}`)
 

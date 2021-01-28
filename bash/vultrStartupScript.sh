@@ -26,3 +26,5 @@ node installPavlov.js
 echo "Installing Horde Services..."
 cd $hordeBashDir
 ./installServices.sh
+systemctl restart systemd-journald.service
+./installServices.sh
