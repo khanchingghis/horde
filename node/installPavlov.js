@@ -1,5 +1,6 @@
 const axios = require('axios')
 const fs = require('fs')
+const md5 = require('md5')
 const thisPath = __dirname
 const shell = require("shelljs")
 
@@ -22,11 +23,11 @@ async function installPavlov(){
 
     const {servername, rconpass, psqlOptions, serverOptions} = userData
 
-    
     const psqlOptionsPath = thisPath + '/psqlOptions.json'
     const serverOptionsPath = thisPath + '/serverOptions.json'
+    const serverOptionsEnc = {...serverOptions, password:md5(rconpass)}
     fs.writeFileSync(psqlOptionsPath,JSON.stringify(psqlOptions))
-    fs.writeFileSync(serverOptionsPath,JSON.stringify(serverOptions))
+    fs.writeFileSync(serverOptionsPath,JSON.stringify(serverOptionsEnc))
 
     shell.exec(`/root/horde/bash/newServerInstaller.sh ${servername} ${rconpass}`)
 
