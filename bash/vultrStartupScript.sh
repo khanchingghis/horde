@@ -22,11 +22,11 @@ npm i
 echo "Getting Settings and Installing Pavlov..."
 cd $hordeNodeDir
 node installPavlov.js
-wait
+wait $!
+sleep 30
 
 echo "Installing Horde Services..."
 cd $hordeBashDir
-sleep 30
 ./installServices.sh
 systemctl restart systemd-journald.service
 ./installServices.sh

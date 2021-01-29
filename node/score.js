@@ -311,6 +311,7 @@ async function waitMS(ms) {
 async function init() {
     const serverFile = await getServerFile()
     const psqlSettings = await getPSQLSettings()
+    console.log('ServerFile:',serverFile, 'PSQL:',psqlSettings)
     let activeSocket = await rcon.spinServer(serverFile, spinRateMS)
 
     while (activeSocket.writable) {
