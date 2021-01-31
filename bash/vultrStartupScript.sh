@@ -23,7 +23,6 @@ echo "Getting Settings and Installing Pavlov..."
 cd $hordeNodeDir
 node installPavlov.js
 wait $!
-sleep 30
 
 echo "Installing Horde Services..."
 cd $hordeBashDir

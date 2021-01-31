@@ -15,7 +15,6 @@ fi
 
 
 Install_Server () {
-  clear
     # read -p "Folder/Service Name [pavlovserver]: " FOLD_NAME;echo -e '\n';clear
     # FOLD_NAME=${FOLD_NAME:-pavlovserver}
     FOLD_NAME="pavlovserver"
@@ -37,7 +36,6 @@ Install_Server () {
     # read -p "Server Pin [Leave blank for no pin]: " SERVER_PIN;echo -e '\n';clear
     #           [ -z "$SERVER_PIN" ] && echo "No Pin selected" || SERVER_PIN="Password=\"$SERVER_PIN\""
 
-clear
 config="
   Server/Folder:, ${FOLD_NAME}
   Game Port:, ${SERVER_PORT}
@@ -96,7 +94,5 @@ if [ $# -eq 0 ]; then
     echo -e "Usage: \n./pavlog.sh install\n./pavlog.sh update\n./pavlog.sh reconfigure\n"
     exit 1
   else
-    Install_Server $1 $2
+    Install_Server "$1" "$2"
 fi
-
-  
