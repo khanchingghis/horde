@@ -28,5 +28,5 @@ sleep 30
 echo "Installing Horde Services..."
 cd $hordeBashDir
 ./installServices.sh
+wait $!
 systemctl restart systemd-journald.service
-./installServices.sh
