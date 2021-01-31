@@ -19,13 +19,6 @@ sudo apt-get install -y nodejs
 echo "Installing Node Dependencies..."
 npm i
 
-echo "Getting Settings and Installing Pavlov..."
+echo "Getting Settings and Installing Pavlov and Services..."
 cd $hordeNodeDir
 node installPavlov.js
-wait $!
-
-echo "Installing Horde Services..."
-cd $hordeBashDir
-./installServices.sh
-wait $!
-systemctl restart systemd-journald.service
