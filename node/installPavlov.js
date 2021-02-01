@@ -31,8 +31,13 @@ async function installPavlov(){
 
     shell.exec(`/root/horde/bash/newServerInstaller.sh "${servername}" "${rconpass}"`)
     shell.exec(`/root/horde/bash/installServices.sh`)
-    // shell.exec(`systemctl restart systemd-journald.service`)
+    await sleep(5000)
+    shell.exec(`systemctl restart systemd-journald.service`)
 
 }
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
 installPavlov().then("Installed.").catch(e=>console.log(e))
