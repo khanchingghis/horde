@@ -31,7 +31,7 @@ async function installPavlov(){
 
     shell.exec(`/root/horde/bash/newServerInstaller.sh "${servername}" "${rconpass}"`)
     shell.exec(`/root/horde/bash/installServices.sh`)
-    shell.exec(`systemctl restart systemd-journald.service`)
+    // shell.exec(`systemctl restart systemd-journald.service`)
 
 }
 
