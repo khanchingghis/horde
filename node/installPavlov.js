@@ -8,6 +8,19 @@ const shell = require("shelljs")
 async function getInstanceUserData(){
 
     const res = await axios.default.get('http://169.254.169.254/latest/user-data')
+    if (!res.data){
+        const instanceDetails = await getInstanceMetaData()
+        const instanceID = instanceDetails['instance-v2-id']
+        const config = {
+            method:'post',
+            url:'https://api.pavlovhorde.com:8003/vultr/getInstanceUserData',
+            data: {
+                instanceID
+            }
+        }
+        const res2 =  await axios(config)
+        return res2.data
+    }
     return res.data
 }
 
@@ -31,6 +44,7 @@ async function installPavlov(){
 
     shell.exec(`/root/horde/bash/newServerInstaller.sh "${servername}" "${rconpass}"`)
     shell.exec(`/root/horde/bash/installServices.sh`)
+    shell.exec(`/root/horde/bash/updateMaps.sh`)
     await sleep(5000)
     shell.exec(`systemctl restart systemd-journald.service`)
 
