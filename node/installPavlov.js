@@ -43,10 +43,9 @@ async function installPavlov(){
     fs.writeFileSync(serverOptionsPath,JSON.stringify(serverOptionsEnc))
 
     shell.exec(`/root/horde/bash/newServerInstaller.sh "${servername}" "${rconpass}"`)
-    shell.exec(`/root/horde/bash/updateMaps.sh`)
     shell.exec(`/root/horde/bash/installServices.sh`)
-    await sleep(30000)
-    shell.exec(`journalctl -n 5`)
+    shell.exec(`/root/horde/bash/updateMaps.sh`)
+    shell.exec(`systemctl restart pavlov`)
     shell.exec(`systemctl restart systemd-journald.service`)
 
 }
