@@ -1,6 +1,7 @@
 
 const shell = require("shelljs")
 const axios = require("axios").default
+const fs = require('fs')
 
 function JSONToIni(json) {
     let res = ''
@@ -50,4 +51,22 @@ async function getMyIP(){
     return res.data.trim()
 }
 
-module.exports = {iniToJSON, JSONToIni, getMyIP}
+function getLocalMaps(){
+    let resJSONArr = []
+    const mapsFolder = '/home/steam/pavlovserver/Pavlov/Saved/maps/'
+    const mapsFolders = fs.readdirSync(mapsFolder,{withFileTypes:true})
+    for (const f of mapsFolders){
+        if (f.isDirectory()){
+            try {
+            const metadata = fs.readFileSync(mapsFolder + '/' + f.name + '/' + 'metadata.json','utf8')
+            const metaObj = JSON.parse(metadata)
+            resJSONArr.push(metaObj)
+            } catch (e){
+                console.log(e)
+            }
+        }
+    }
+    return resJSONArr
+}
+
+module.exports = {iniToJSON, JSONToIni, getMyIP, getLocalMaps}

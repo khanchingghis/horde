@@ -151,6 +151,18 @@ app.get('/updateMaps', (req, res, next) => {
     }
 })
 
+app.get('/getMapsJSON', async (req, res, next) => {
+
+    try {
+        const mapsJSON = await apiF.getLocalMaps()
+        res.send(mapsJSON)
+        next()
+    } catch (e) {
+        res.sendStatus(404)
+        next(e.message)
+    }
+})
+
 //Default Error
 app.use((req, res, next) => {
     if (!req.route) {

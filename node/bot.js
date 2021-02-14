@@ -5,7 +5,9 @@ const fs = require('fs')
 async function sendDiscordMessage(msg, webhookurl) {
 
     const sendObj = {
-        "content": msg
+        "content": msg,
+        'username':"Horde",
+        'avatar_url': "https://pavlovhorde.com/static/horde1opac1-72895d8ae3e2449633940b00e7f79afe.png"
     }
     axios.post(webhookurl,
         sendObj
