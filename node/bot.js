@@ -7,7 +7,7 @@ async function sendDiscordMessage(msg, webhookurl) {
     const sendObj = {
         "content": msg,
         'username':"Horde",
-        'avatar_url': "https://pavlovhorde.com/static/horde1opac1-72895d8ae3e2449633940b00e7f79afe.png"
+        'avatar_url': "https://pavlovhorde.com/static/PHorde2-0f28d87f6d78c882bb2061c2ab9d5f67.png"
     }
     axios.post(webhookurl,
         sendObj
