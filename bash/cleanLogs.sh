@@ -1,4 +1,6 @@
 #!/bin/bash
 #Wipes Logs
 
-:>/home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log
+logFile="/home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log"
+echo "Cleaning $logFile"
+:>$logFile
