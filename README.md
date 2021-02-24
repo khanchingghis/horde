@@ -16,6 +16,9 @@
 Rent a Server Here:
 [https://pavlovhorde.com/buy](https://pavlovhorde.com/buy)
 
+View Live Servers Here:
+[https://pavlovhorde.com/](https://pavlovhorde.com/)
+
 View KDA Scores Here:
 [https://pavlovhorde.com/scores](https://pavlovhorde.com/scores)
 
