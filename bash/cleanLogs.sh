@@ -8,3 +8,4 @@ echo "Cleaning $logFile"
 :>$logFile
 :>$logFile2
 rm -r "$backupLogsDir"Pavlov-backup-*
+rm -r "$backupLogsDir"Pavlov_2-backup-*
