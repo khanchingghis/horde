@@ -6,4 +6,4 @@ TARGET_KEY="MaxPlayers"
 REPLACEMENT_VALUE="10"
 echo "Editing $TARGET_KEY"
 
-sed -c -i "s/\($TARGET_KEY *= *\).*/\1$REPLACEMENT_VALUE/" $CONFIG_FILE
+sed -i "s/\($TARGET_KEY *= *\).*/\1$REPLACEMENT_VALUE/" $CONFIG_FILE
