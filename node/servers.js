@@ -1,7 +1,11 @@
-const axios = require('axios')
+const axios = require('axios').default
 const fs = require('fs')
 const https = require('https');
 const rcon = require('./rcon');
+
+axios.defaults.timeout = 60000
+axios.defaults.baseURL='https://api2.pavlovhorde.com:8003'
+
 
 async function getServers() {
   let axios = require('axios');
@@ -11,19 +15,9 @@ async function getServers() {
     })
   });
 
-
   const config = {
-    method: 'post',
-    url: 'https://shack-ms.vankrupt.com/servers/v1/list',
-    headers: {
-      'version': '0.80.60',
-      'shack': '1',
-      'User-Agent': 'Pavlov VR Game Client',
-      'Content-Type': 'text/json',
-      'Content-Length': '3',
-      'Accept-Encoding': 'deflate, gzip'
-    },
-    data: "{ }",
+    method: 'get',
+    url: '/getServers'
   };
 
   const response = await instance(config)
@@ -33,7 +27,7 @@ async function getServers() {
 
 async function getMapsList(sha) {
 
-  const downloadUrl = 'https://github.com/khanchingghis/horde/raw/master/'
+  const downloadUrl = '/getMapsJSON'
   let axios = require('axios');
 
   const config = {
@@ -67,10 +61,7 @@ async function getServersPC() {
 
   const config = {
     method: 'get',
-    url: 'http://ms.pavlov-vr.com/v1/servers',
-    headers: {
-      'version': '0.70.4'
-    }
+    url: '/getServersPC'
   };
 
   const response = await instance(config)
