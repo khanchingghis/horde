@@ -23,7 +23,7 @@ Install_Server () {
     SERVER_NAME=$1
     # read -p "Max Players [8]: " SERVER_MAX_PLAYERS;echo -e '\n';clear
     # SERVER_MAX_PLAYERS=${SERVER_MAX_PLAYERS:-8}
-    SERVER_MAX_PLAYERS=8
+    SERVER_MAX_PLAYERS=10
     # read -p "Game Port [7777]: " SERVER_PORT;echo -e '\n';clear
     # SERVER_PORT=${SERVER_PORT:-7777}
     SERVER_PORT=7777
