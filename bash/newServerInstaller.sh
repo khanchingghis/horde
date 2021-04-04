@@ -3,7 +3,7 @@
 INSTALL_USER="steam"
 
 Install_Steam () {
-    apt update && apt install -y gdb curl lib32gcc1
+    apt update && apt install -y gdb curl lib32gcc1 libc++-dev unzip
     useradd -m -d /home/$INSTALL_USER -s /bin/bash -U $INSTALL_USER
     runuser -l $INSTALL_USER -c 'mkdir ~/Steam && cd ~/Steam && curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -'
 }
