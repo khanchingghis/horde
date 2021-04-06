@@ -2,7 +2,7 @@
 
 localInstallDir="/root/"
 localHordeDir=$localInstallDir"horde/"
-localMapsDir=$localMapsDir"maps/"
+localMapsDir=$localHordeDir"maps/"
 hordeRepo="https://github.com/khanchingghis/horde"
 mapsLocalFolder="/home/steam/pavlovserver/Pavlov/Saved/maps/"
 remoteGameini="https://docs.google.com/spreadsheets/d/${G_SHEET_ID}/export?format=csv"
