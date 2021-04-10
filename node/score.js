@@ -178,7 +178,7 @@ async function postScores(activeSocket, psqlSettings, serverFile) {
             latestKDAs.MapLabel = serverInfo.MapLabel
             latestKDAs.isNewRound = true
             if (webhookUrl) {
-                dMsg.sendDiscordMessage(`New Game Starting on ${serverInfo.mapLabel}!`, webhookUrl)
+                dMsg.sendDiscordMessage(`New Game Starting on ${serverInfo.MapLabel}!`, webhookUrl)
             } else {
                 console.log('No webhook.')
             }
