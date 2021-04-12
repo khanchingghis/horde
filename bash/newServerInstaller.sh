@@ -72,6 +72,7 @@ MaxPlayers=${SERVER_MAX_PLAYERS}
 bSecured=true
 bCustomServer=true 
 bWhitelist=false
+TimeLimit=15
 MapRotation=(MapId="sand", GameMode="SND")
 EOL
 
