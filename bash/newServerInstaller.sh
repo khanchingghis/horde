@@ -72,13 +72,14 @@ MaxPlayers=${SERVER_MAX_PLAYERS}
 bSecured=true
 bCustomServer=true 
 bWhitelist=false
-TimeLimit=15
+TimeLimit=20
 MapRotation=(MapId="sand", GameMode="SND")
 EOL
 
 cat >/home/${INSTALL_USER}/${FOLD_NAME}/Pavlov/Saved/Config/mods.txt <<EOL
 0024e335c394fc496e14c9447c13c5a # Chingghis
 0020acb54484bae9f337d62b095816c # Chingghis2
+Chingghis
 EOL
 
 cat >/home/${INSTALL_USER}/${FOLD_NAME}/Pavlov/Saved/Config/RconSettings.txt <<EOL
