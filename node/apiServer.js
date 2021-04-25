@@ -21,6 +21,7 @@ const app = express()
 const rconPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/RconSettings.txt'
 const modsPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt'
 const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
+const serverOptionsPath = '/root/horde/node/serverOptions.json'
 
 let myIP = ''
 
@@ -83,6 +84,20 @@ app.get('/getGameIni', (req, res, next) => {
     }
 })
 
+app.get('/getWebhook', (req, res, next) => {
+
+    try {
+        const serverOptions = JSON.parse(fs.readFileSync(serverOptionsPath,'utf8'))
+        const webhook = serverOptions.webhook
+        res.send(webhook)
+        res.sentObj = webhook
+        next()
+    } catch (e) {
+        res.sendStatus(404)
+        next(e.message)
+    }
+})
+
 app.post('/writeGameIni', (req, res, next) => {
 
     try {
@@ -100,6 +115,32 @@ app.post('/writeGameIni', (req, res, next) => {
             'status': 'success',
             'writedata': writeGameIni,
             'writepath': gameIniPath
+        }
+        res.send(responseObj)
+        res.sentObj = responseObj
+        next();
+    } catch (e) {
+        res.sendStatus(404)
+        next(e.message)
+    }
+})
+
+app.post('/writeWebhook', (req, res, next) => {
+
+    try {
+
+        const webhook = req.body.webhook
+        if (!webhook) throw new Error('No Webhook Body')
+
+        const oldServerOptions = JSON.parse(fs.readFileSync(serverOptionsPath,'utf8'))
+        const newServerOptions = {...oldServerOptions, webhook}
+
+        shell.exec('systemctl stop hordeScore')
+        fs.writeFileSync(serverOptionsPath, newServerOptions)
+        shell.exec('systemctl start hordeScore')
+        const responseObj = {
+            'status': 'success',
+            'writedata': webhook
         }
         res.send(responseObj)
         res.sentObj = responseObj
