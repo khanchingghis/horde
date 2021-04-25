@@ -136,7 +136,7 @@ app.post('/writeWebhook', (req, res, next) => {
         const newServerOptions = {...oldServerOptions, webhook}
 
         shell.exec('systemctl stop hordeScore')
-        fs.writeFileSync(serverOptionsPath, newServerOptions)
+        fs.writeFileSync(serverOptionsPath, JSON.stringify(newServerOptions))
         shell.exec('systemctl start hordeScore')
         const responseObj = {
             'status': 'success',
