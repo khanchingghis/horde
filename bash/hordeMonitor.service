@@ -1,0 +1,10 @@
+[Unit]
+Description=Monitor Resource Usage
+
+[Service]
+ExecStart=/root/horde/bash/hordeMonitor.sh
+Restart=always
+RestartSec=1h
+
+[Install]
+WantedBy = multi-user.target
