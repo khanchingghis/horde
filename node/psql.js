@@ -37,4 +37,10 @@ async function logData(psqlSettings, clientId, data, result){
     })
 }
 
-module.exports = {sendData, logData}
+async function writeReport(report){
+    const thisQuery = `INSERT INTO monitor (report) VALUES ($1)`
+    const res = await pool.query(thisQuery,[report])
+    return res.rows
+}
+
+module.exports = {writeReport, sendData, logData}
