@@ -47,7 +47,7 @@ async function checkAllSend(){
     const serverRes = await serverCalls.getServers()
     const servers = serverRes.servers
     const thisServer = servers.find(s=>s.ip == ip)
-    const {mapLabel, slots} = thisServer
+    const {mapLabel, slots} = thisServer || {}
     let restart = false
     if (cpu > 95) {
         restartPavlov()
