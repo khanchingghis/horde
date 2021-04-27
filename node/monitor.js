@@ -1,6 +1,7 @@
 const fs = require('fs')
 const apiF = require('./apiFunctions')
 const psql = require('./psql')
+const serverCalls = require('./servers')
 
 function execShellCommand(cmd) {
     const exec = require('child_process').exec;
@@ -43,10 +44,16 @@ async function checkAllSend(){
     const cpu = await checkCPU()
     const storage = await checkStorage()
     const ip = await apiF.getMyIP()
+    const servers = await serverCalls.getServers()
+    const thisServer = servers.find(s=>s.ip == ip)
+    const {mapLabel, slots} = thisServer
+    let restart = false
     if (cpu > 95) {
         restartPavlov()
+        restart = true
     }
-    psql.writeReport({ip,cpu,storage})
+    console.log(ip,'CPU:',cpu,'Storage:',storage)
+    psql.writeReport({ip,cpu,storage,mapLabel, slots, restart})
 }
 
 checkAllSend()
