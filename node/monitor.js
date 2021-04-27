@@ -44,7 +44,8 @@ async function checkAllSend(){
     const cpu = await checkCPU()
     const storage = await checkStorage()
     const ip = await apiF.getMyIP()
-    const servers = await serverCalls.getServers()
+    const serverRes = await serverCalls.getServers()
+    const servers = serverRes.servers
     const thisServer = servers.find(s=>s.ip == ip)
     const {mapLabel, slots} = thisServer
     let restart = false
