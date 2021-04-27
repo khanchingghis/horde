@@ -1,5 +1,8 @@
-const { Client } = require('pg')
+const { Pool } = require('pg')
 const score = require('./score')
+const writerPSQLSettings = require('./psqlOptions.json')
+
+const pool = new Pool(writerPSQLSettings)
 
 async function sendData(psqlSettings, playerList, serverInfo) {
     
@@ -25,7 +28,6 @@ async function sendData(psqlSettings, playerList, serverInfo) {
         })
     })
 }
-
 
 async function logData(psqlSettings, clientId, data, result){
     const client = new Client(psqlSettings)
