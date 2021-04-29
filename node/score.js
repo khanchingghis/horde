@@ -126,7 +126,7 @@ function getServerFile() {
     })
 }
 
-async function postScores(activeSocket, psqlSettings, serverFile) {
+async function postScores(activeSocket, serverFile) {
 
     const timeNow = new Date()
     const timeStamp = timeNow.toISOString()
@@ -184,7 +184,7 @@ async function postScores(activeSocket, psqlSettings, serverFile) {
             }
             }
 
-        const res = await psql.sendData(psqlSettings, playerList, serverInfo)
+        const res = await psql.sendData(playerList, serverInfo)
             .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
             .catch(e => console.log('SQL Error:', e))
 
@@ -314,12 +314,11 @@ async function waitMS(ms) {
 
 async function init() {
     const serverFile = await getServerFile()
-    const psqlSettings = await getPSQLSettings()
-    console.log('ServerFile:',serverFile, 'PSQL:',psqlSettings)
+    console.log('ServerFile:',serverFile)
     let activeSocket = await rcon.spinServer(serverFile, spinRateMS)
 
     while (activeSocket.writable) {
-        const cycleRes = await postScores(activeSocket, psqlSettings, serverFile)
+        const cycleRes = await postScores(activeSocket, serverFile)
         await waitMS(cycleRateMS)
         iteration++
     }
