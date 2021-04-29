@@ -8,7 +8,6 @@ const bodyParser = require("body-parser")
 const apiF = require('./apiFunctions')
 const cors = require("cors");
 const psql = require('./psql');
-const { getPSQLSettings } = require("./score");
 const util = require('util');
 
 const host = '0.0.0.0';
@@ -30,7 +29,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 
 let clientInfo = {}
-let psqlSettings = {}
 
 
 //Check Pass
@@ -41,8 +39,6 @@ app.use(async (req, res, next) => {
             req.connection.remoteAddress ||
             req.socket.remoteAddress ||
             (req.connection.socket ? req.connection.socket.remoteAddress : null)
-
-        psqlSettings = await getPSQLSettings()
 
         clientInfo = {
             'clientip': clientip,
@@ -220,7 +216,7 @@ app.use(async (req, res, next) => {
         'status': res.statusCode,
         'body': res.sentObj || 'undefined'
     }
-    const psres = await psql.logData(psqlSettings, clientInfo, req.body, resultData)
+    const psres = await psql.logData(clientInfo, req.body, resultData)
     next()
 })
 
@@ -234,7 +230,7 @@ app.use(async (err, req, res, next) => {
         'error': err,
         'body': res.sentObj || 'undefined'
     }
-    const psres = await psql.logData(psqlSettings, clientInfo, req.body, resultData)
+    const psres = await psql.logData(clientInfo, req.body, resultData)
     next()
 })
 
