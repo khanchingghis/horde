@@ -41,6 +41,7 @@ async function restartPavlov(){
 }
 
 async function checkAllSend(){
+    const nonGamingServers = ['45.32.183.95']
     const cpu = await checkCPU()
     const storage = await checkStorage()
     const ip = await apiF.getMyIP()
@@ -49,7 +50,7 @@ async function checkAllSend(){
     const thisServer = servers.find(s=>s.ip == ip)
     const {mapLabel, slots} = thisServer || {}
     let restart = false
-    if (cpu > 95) {
+    if (cpu > 95 && !nonGamingServers.includes(ip)) {
         restartPavlov()
         restart = true
     }
