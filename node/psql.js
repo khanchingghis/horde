@@ -6,6 +6,7 @@ const pool = new Pool(writerPSQLSettings)
 
 async function sendData(playerList, serverInfo) {
 
+    try{
     const nameIntRegex = /<[0-9]. /g
     let playerListFormatted = playerList.map(e => {
         const kda = e.PlayerInfo.KDA.split('/')
@@ -21,7 +22,9 @@ async function sendData(playerList, serverInfo) {
     const serverInfoFormatted = JSON.stringify(serverInfo)
 
     pool.query(`INSERT INTO raw_scores (playerList, serverInfo) VALUES ($1, $2)`, [playerListFormatted, serverInfoFormatted])
-
+    } catch (e){
+        console.log(e,'Playerlist:',playerList,'serverInfo:',serverInfo)
+    }
 }
 
 async function logData(clientId, data, result) {

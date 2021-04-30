@@ -133,8 +133,9 @@ async function postScores(activeSocket, serverFile) {
 
     const webhookUrl = serverFile.webhook
 
-    const thisServer = rcon.getServerInfo(activeSocket)
+    const thisServer = await rcon.getServerInfo(activeSocket)
     if (!thisServer) return activeSocket
+    if (!thisServer.playerList) return activeSocket
 
     let isPlayerCountChanged = false
     if (thisServer.playerList.length != playerList.length) isPlayerCountChanged = true
@@ -148,12 +149,16 @@ async function postScores(activeSocket, serverFile) {
     let allDSum = 0
     let allASum = 0
 
-    if (playerList.length > 0) {
+    try {
+        if (playerList.length > 0) {
 
-        allKDASum = sumAllKDA(playerList)
-        allKSum = sumAllK(playerList)
-        allDSum = sumAllD(playerList)
-        allASum = sumAllA(playerList)
+            allKDASum = sumAllKDA(playerList)
+            allKSum = sumAllK(playerList)
+            allDSum = sumAllD(playerList)
+            allASum = sumAllA(playerList)
+        }
+    } catch (e) {
+        console.log(e, 'playerlist:', playerList)
     }
 
     serverInfo.KDASum = allKDASum
@@ -242,7 +247,7 @@ function sumKDA(player) {
     try {
         return player.PlayerInfo.KDA.split('/').reduce((a, b) => a + parseInt(b), 0)
     } catch (e) {
-        console.log(e)
+        console.log(e, 'player:', player)
         return 0
     }
 }
