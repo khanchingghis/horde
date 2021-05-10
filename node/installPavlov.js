@@ -42,7 +42,7 @@ async function installPavlov(){
     fs.writeFileSync(psqlOptionsPath,JSON.stringify(psqlOptions))
     fs.writeFileSync(serverOptionsPath,JSON.stringify(serverOptionsEnc))
 
-    shell.exec(`/root/horde/bash/newServerInstaller.sh "${servername}" "${rconpass}"`)
+    shell.exec(`/root/horde/bash/newServerInstaller.sh '${servername}' '${rconpass}'`)
     shell.exec(`/root/horde/bash/installServices.sh`)
     shell.exec(`/root/horde/bash/updateMaps.sh`)
     shell.exec(`systemctl restart pavlov`)
