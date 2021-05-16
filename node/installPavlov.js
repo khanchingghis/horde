@@ -34,13 +34,15 @@ async function installPavlov(){
 
     const userData = await getInstanceUserData()
 
-    const {servername, rconpass, psqlOptions, serverOptions} = userData
+    let {servername, rconpass, psqlOptions, serverOptions} = userData
 
     const psqlOptionsPath = thisPath + '/psqlOptions.json'
     const serverOptionsPath = thisPath + '/serverOptions.json'
     const serverOptionsEnc = {...serverOptions, password:md5(rconpass)}
     fs.writeFileSync(psqlOptionsPath,JSON.stringify(psqlOptions))
     fs.writeFileSync(serverOptionsPath,JSON.stringify(serverOptionsEnc))
+    servername = servername.replace(`'`,`'"'"'`)
+    rconpass = rconpass.replace(`'`,`'"'"'`)
 
     shell.exec(`/root/horde/bash/newServerInstaller.sh '${servername}' '${rconpass}'`)
     shell.exec(`/root/horde/bash/installServices.sh`)
