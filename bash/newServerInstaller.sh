@@ -60,7 +60,7 @@ echo "${config}"
 #   * ) echo "invalid";;
 # esac
 
-runuser -l $INSTALL_USER -c 'cd ~/Steam && ./steamcmd.sh +login anonymous +force_install_dir /home/'"$INSTALL_USER"'/'"$FOLD_NAME"' +app_update 622970 -beta shack +exit;chmod +x ~/'"$FOLD_NAME"'/PavlovServer.sh;mkdir -p /home/'"$INSTALL_USER"'/'"$FOLD_NAME"'/Pavlov/Saved/Logs;mkdir -p /home/'"$INSTALL_USER"'/'"$FOLD_NAME"'/Pavlov/Saved/Config/LinuxServer'
+runuser -l $INSTALL_USER -c 'cd ~/Steam && ./steamcmd.sh +login anonymous +force_install_dir /home/'"$INSTALL_USER"'/'"$FOLD_NAME"' +app_update 622970 -beta shack +exit;chmod +x ~/'"$FOLD_NAME"'/PavlovServer.sh;mkdir -p /home/'"$INSTALL_USER"'/'"$FOLD_NAME"'/Pavlov/Saved/Logs;mkdir -p /home/'"$INSTALL_USER"'/'"$FOLD_NAME"'/Pavlov/Saved/Config/LinuxServer;mkdir -p /home/'"$INSTALL_USER"'/'"$FOLD_NAME"'/Pavlov/Saved/maps/'
 
 
 # MAPS_CLEAN=$( IFS=$'\n'; echo "${ARRAY[*]}" )

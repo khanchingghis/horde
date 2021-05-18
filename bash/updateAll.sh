@@ -23,6 +23,6 @@ else
 
     echo "Updating Maps..."
     cd $localMapsDir
-    unzip -qq -o "*.zip" -d $mapsLocalFolder
+    unzip -q -o "*.zip" -d $mapsLocalFolder
     chmod +rx -R $mapsLocalFolder
 fi
