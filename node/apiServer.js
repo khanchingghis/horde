@@ -19,7 +19,7 @@ const app = express()
 
 const rconPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/RconSettings.txt'
 const modsPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt'
-const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/Game.txt'
+const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/ModSave/Game.txt'
 const gameIniPathR = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
 const serverOptionsPath = '/root/horde/node/serverOptions.json'
 const hordeBashPath = '/root/horde/bash/'
