@@ -106,6 +106,8 @@ app.post('/writeGameIni', (req, res, next) => {
         let writeGameIni = '[/Script/Pavlov.DedicatedServer]\n'
         writeGameIni += apiF.JSONToIni(gameini)
 
+        let writeGameIniR = '[/Script/Pavlov.DedicatedServer]\n'
+
         shell.exec('systemctl stop pavlov')
         
         const selector = gameini.selector
@@ -114,7 +116,6 @@ app.post('/writeGameIni', (req, res, next) => {
             fs.writeFileSync(gameIniPathR, writeGameIni)
         } else {
             let gameiniR = {...gameini, Maps:[{MapId:'SVR_Chingghis_Select',GameMode:'DM'}]}
-            let writeGameIniR = '[/Script/Pavlov.DedicatedServer]\n'
             writeGameIniR += apiF.JSONToIni(gameiniR)
             fs.writeFileSync(gameIniPath, writeGameIni)
             fs.writeFileSync(gameIniPathR, writeGameIniR)
