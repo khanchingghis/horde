@@ -19,8 +19,10 @@ const app = express()
 
 const rconPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/RconSettings.txt'
 const modsPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt'
-const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
+const gameIniPath = '/home/steam/pavlovserver/Pavlov/Saved/Config/Game.txt'
+const gameIniPathR = '/home/steam/pavlovserver/Pavlov/Saved/Config/LinuxServer/Game.ini'
 const serverOptionsPath = '/root/horde/node/serverOptions.json'
+const hordeBashPath = '/root/horde/bash/'
 
 let myIP = ''
 
@@ -105,11 +107,24 @@ app.post('/writeGameIni', (req, res, next) => {
         writeGameIni += apiF.JSONToIni(gameini)
 
         shell.exec('systemctl stop pavlov')
-        fs.writeFileSync(gameIniPath, writeGameIni)
+        
+        const selector = gameini.selector
+        if ( !selector || selector == 'None'){
+            fs.writeFileSync(gameIniPath, writeGameIni)
+            fs.writeFileSync(gameIniPathR, writeGameIni)
+        } else {
+            let gameiniR = {...gameini, Maps:[{MapId:'SVR_Chingghis_Select',GameMode:'DM'}]}
+            let writeGameIniR = '[/Script/Pavlov.DedicatedServer]\n'
+            writeGameIniR += apiF.JSONToIni(gameiniR)
+            fs.writeFileSync(gameIniPath, writeGameIni)
+            fs.writeFileSync(gameIniPathR, writeGameIniR)
+            shell.exec(`${hordeBashPath}selectorUpdate.sh ${selector}`)
+        }
+        
         shell.exec('systemctl start pavlov')
         const responseObj = {
             'status': 'success',
-            'writedata': writeGameIni,
+            'writedata': {writeGameIni, writeGameIniR},
             'writepath': gameIniPath
         }
         res.send(responseObj)
