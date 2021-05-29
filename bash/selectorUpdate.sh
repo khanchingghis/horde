@@ -1,4 +1,4 @@
-myip=$(curl icanhazip.com)
+myip=$(dig @resolver4.opendns.com myip.opendns.com +short)
 myipTxt=$(echo $myip | tr -d '.')
 myCredsFileName=creds$myipTxt.txt
 pavlovConfigDir="/home/steam/pavlovserver/Pavlov/Saved/Config"
