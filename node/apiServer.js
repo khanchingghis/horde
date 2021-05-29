@@ -112,9 +112,11 @@ app.post('/writeGameIni', (req, res, next) => {
         
         const selector = gameini.selector
         if ( !selector || selector == 'None'){
+            console.log('updating selector')
             fs.writeFileSync(gameIniPath, writeGameIni)
             fs.writeFileSync(gameIniPathR, writeGameIni)
         } else {
+            console.log('updating selector')
             let gameiniR = {...gameini, Maps:[{MapId:'SVR_Chingghis_Select',GameMode:'DM'}]}
             writeGameIniR += apiF.JSONToIni(gameiniR)
             fs.writeFileSync(gameIniPath, writeGameIni)
