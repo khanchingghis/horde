@@ -34,6 +34,8 @@ async function installPavlov(){
 
     const userData = await getInstanceUserData()
 
+    console.log(userData)
+
     let {servername, rconpass, psqlOptions, serverOptions} = userData
 
     const psqlOptionsPath = thisPath + '/psqlOptions.json'
