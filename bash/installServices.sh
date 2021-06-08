@@ -10,15 +10,16 @@ install_service() {
     hordeBashDir="/root/horde/bash"
     serviceName=$1
     serviceFile="$serviceName.service"
-    scriptFile="$serviceName.sh"
+    systemctl disable $serviceName
+    systemctl stop $serviceName
     echo "copying $hordeBashDir/$serviceFile to /etc/systemd/system/$serviceFile"
-    cp $hordeBashDir/$serviceFile /etc/systemd/system/$serviceFile
+    cp "$hordeBashDir/$serviceFile" /etc/systemd/system/$serviceFile
     systemctl enable $serviceName
     systemctl start $serviceName
 }
-
-install_service "updateAll"
 install_service "pavlov"
+install_service "updateAll"
+
 install_service "hordeScore"
 install_service "apiServer"
 install_service "hordeMonitor"
