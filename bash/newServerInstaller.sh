@@ -62,7 +62,8 @@ echo "${config}"
 
 runuser -l $INSTALL_USER -c 'cd ~/Steam && ./steamcmd.sh +login anonymous +app_update 622970 -beta shack +exit && echo "Install Complete"'
 runuser -l $INSTALL_USER -c 'cp -r ~/Steam/steamapps/common/PavlovVRServer/* /home/'"$INSTALL_USER"'/'"$FOLD_NAME"'/;chmod +x ~/'"$FOLD_NAME"'/PavlovServer.sh;mkdir -p /home/'"$INSTALL_USER"'/'"$FOLD_NAME"'/Pavlov/Saved/Logs;mkdir -p /home/'"$INSTALL_USER"'/'"$FOLD_NAME"'/Pavlov/Saved/Config/LinuxServer;mkdir -p /home/'"$INSTALL_USER"'/'"$FOLD_NAME"'/Pavlov/Saved/maps/'
-
+sleep 10
+runuser -l $INSTALL_USER -c 'cp -r ~/Steam/steamapps/common/PavlovVRServer/* /home/'"$INSTALL_USER"'/'"$FOLD_NAME"'/'
 
 # MAPS_CLEAN=$( IFS=$'\n'; echo "${ARRAY[*]}" )
 cat >/home/${INSTALL_USER}/${FOLD_NAME}/Pavlov/Saved/Config/LinuxServer/Game.ini <<EOL
