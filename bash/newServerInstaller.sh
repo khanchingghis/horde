@@ -65,6 +65,11 @@ runuser -l $INSTALL_USER -c 'cp -r ~/Steam/steamapps/common/PavlovVRServer/* /ho
 sleep 20
 runuser -l $INSTALL_USER -c 'cp -r ~/Steam/steamapps/common/PavlovVRServer/* /home/'"$INSTALL_USER"'/'"$FOLD_NAME"'/'
 
+runuser -l $INSTALL_USER -c '~/Steam/steamcmd.sh +login anonymous +app_update 1007 +quit'
+runuser -l $INSTALL_USER -c 'mkdir -p ~/.steam/sdk64'
+runuser -l $INSTALL_USER -c 'cp ~/Steam/steamapps/common/Steamworks\ SDK\ Redist/linux64/steamclient.so ~/.steam/sdk64/steamclient.so'
+runuser -l $INSTALL_USER -c 'cp ~/Steam/steamapps/common/Steamworks\ SDK\ Redist/linux64/steamclient.so ~/pavlovserver/Pavlov/Binaries/Linux/steamclient.so'
+
 # MAPS_CLEAN=$( IFS=$'\n'; echo "${ARRAY[*]}" )
 cat >/home/${INSTALL_USER}/${FOLD_NAME}/Pavlov/Saved/Config/LinuxServer/Game.ini <<EOL
 [/Script/Pavlov.DedicatedServer]
@@ -91,6 +96,8 @@ EOL
 
 touch /home/steam/pavlovserver/Pavlov/Saved/Config/blacklist.txt
 chmod o+rwx /home/steam/pavlovserver/Pavlov/Saved/Config/blacklist.txt
+
+
 
 }
 
