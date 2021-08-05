@@ -171,13 +171,15 @@ app.post('/writePassword', (req, res, next) => {
         const newPassword = req.body.newpass
 
         const rconFileTxt = `Password=${newPassword}\nPort=9100`
+        const serverOptionsObj = require(serverOptionsPath)
+        const serverOptionsEnc = {...serverOptionsObj, password:md5(newPassword)}
         shell.exec('systemctl stop pavlov')
         fs.writeFileSync(rconPath, rconFileTxt)
+        fs.writeFileSync(serverOptionsPath,JSON.stringify(serverOptionsEnc))
         shell.exec('systemctl start pavlov')
         const responseObj = {
             'status': 'success',
-            'writedata': rconFileTxt,
-            'writepath': rconPath
+            'writedata': {rconFileTxt,serverOptionsObj}
         }
         res.send(responseObj)
         res.sentObj = responseObj
