@@ -8,14 +8,20 @@ systemctl disable pavlov
 install_service() {
     echo "Installing $1 service..."
     hordeBashDir="/root/horde/bash"
-    serviceName=$1
-    serviceFile="$serviceName.service"
-    systemctl disable $serviceName
-    systemctl stop $serviceName
-    echo "copying $hordeBashDir/$serviceFile to /etc/systemd/system/$serviceFile"
-    cp "$hordeBashDir/$serviceFile" /etc/systemd/system/$serviceFile
-    systemctl enable $serviceName
-    systemctl start $serviceName
+    sourceServiceName=$1
+    sourceServiceFile="$sourceServiceName.service"
+
+    destServiceName=$2
+    destServiceFile="$destServiceName.service"
+
+    systemctl disable $destServiceName
+    systemctl stop $destServiceName
+
+    echo "copying $hordeBashDir/$sourceServiceFile to /etc/systemd/system/$destServiceFile"
+    cp "$hordeBashDir/$sourceServiceFile" /etc/systemd/system/$destServiceFile
+
+    systemctl enable $destServiceName
+    systemctl start $destServiceName
 }
 
-install_service "pavlovComp"
+install_service "pavlovComp" "pavlov"

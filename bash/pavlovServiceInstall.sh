@@ -1,11 +1,16 @@
 #!/bin/bash
 #Installs Service
 
-thisDir=$(dirname "$0")
-serviceName="pavlov"
-serviceFile="$serviceName.service"
-scriptFile="$serviceName.sh"
-cp $thisDir/$serviceFile /etc/systemd/system/$serviceFile
-cp $thisDir/$scriptFile /home/steam/pavlovserver/$scriptFile
-systemctl enable $serviceName
-systemctl start $serviceName
+install_service() {
+    echo "Installing $1 service..."
+    hordeBashDir="/root/horde/bash"
+    serviceName=$1
+    serviceFile="$serviceName.service"
+    systemctl disable $serviceName
+    systemctl stop $serviceName
+    echo "copying $hordeBashDir/$serviceFile to /etc/systemd/system/$serviceFile"
+    cp "$hordeBashDir/$serviceFile" /etc/systemd/system/$serviceFile
+    systemctl enable $serviceName
+    systemctl start $serviceName
+}
+install_service "pavlov"
