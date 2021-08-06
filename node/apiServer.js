@@ -173,10 +173,20 @@ app.post('/writePassword', (req, res, next) => {
         const rconFileTxt = `Password=${newPassword}\nPort=9100`
         const serverOptionsObj = require(serverOptionsPath)
         const serverOptionsEnc = {...serverOptionsObj, password:md5(newPassword)}
+        const gameIniTxt = fs.readFileSync(gameIniPath).toString()
+        const gameIniObj = apiF.iniToJSON(gameIniTxt)
+
         shell.exec('systemctl stop pavlov')
+        //write rconsettings
         fs.writeFileSync(rconPath, rconFileTxt)
+
+        //write serveroptions for scores
         fs.writeFileSync(serverOptionsPath,JSON.stringify(serverOptionsEnc))
+
+        //write selector pass
+        shell.exec(`${hordeBashPath}selectorLoad.sh ${gameIniObj.selector}`)
         shell.exec('systemctl start pavlov')
+
         const responseObj = {
             'status': 'success',
             'writedata': {rconFileTxt,serverOptionsObj}
