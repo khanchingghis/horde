@@ -184,7 +184,8 @@ app.post('/writePassword', (req, res, next) => {
         fs.writeFileSync(serverOptionsPath,JSON.stringify(serverOptionsEnc))
 
         //write selector pass
-        shell.exec(`${hordeBashPath}selectorLoad.sh ${gameIniObj.selector}`)
+        const selectorLoadRes = shell.exec(`${hordeBashPath}selectorLoad.sh "${gameIniObj.selector}"`)
+        console.log(`Changed Password`, selectorLoadRes)
         shell.exec('systemctl start pavlov')
 
         const responseObj = {
