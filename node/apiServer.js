@@ -170,7 +170,7 @@ app.post('/writePassword', (req, res, next) => {
     try {
         const newPassword = req.body.newpass
 
-        const rconFileTxt = `Password=${newPassword}\nPort=9100`
+        const rconFileTxt = `Password=${newPassword}\nPort=9100\n`
         const serverOptionsObj = require(serverOptionsPath)
         const serverOptionsEnc = {...serverOptionsObj, password:md5(newPassword)}
         const gameIniTxt = fs.readFileSync(gameIniPath).toString()
