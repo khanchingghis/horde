@@ -74,6 +74,7 @@ runuser -l $INSTALL_USER -c 'cp ~/Steam/steamapps/common/Steamworks\ SDK\ Redist
 cat >/home/${INSTALL_USER}/${FOLD_NAME}/Pavlov/Saved/Config/LinuxServer/Game.ini <<EOL
 [/Script/Pavlov.DedicatedServer]
 ServerName="${SERVER_NAME}"
+bVerboseLogging=true
 bEnabled=true
 MaxPlayers=${SERVER_MAX_PLAYERS}
 bSecured=true
