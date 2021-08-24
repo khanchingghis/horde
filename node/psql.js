@@ -39,4 +39,10 @@ async function writeReport(report) {
     return res.rows
 }
 
-module.exports = { writeReport, sendData, logData }
+async function writeKillData(killDataObj){
+    const thisQuery = `INSERT INTO killstream (gameid, killer, killed, killedby, headshot) VALUES ($<gameid>, $<Killer>, $<Killed>, $<Killedby>, $<Headshot>)`
+    const res = await pool.query(thisQuery, [killDataObj])
+    return res.rows
+}
+
+module.exports = { writeReport, sendData, logData, writeKillData }

@@ -7,6 +7,7 @@ const servers = require('./servers')
 const { v4: uuidv4 } = require('uuid');
 const psql = require('./psql')
 const dMsg = require('./bot')
+const logScraper = require('./logScraper')
 
 const myFormID = '1FAIpQLScOi8_7neH_71KM1AuS2PL2ZIs794eNv1u4ZunEz8WFuXwyBg'
 
@@ -179,6 +180,7 @@ async function postScores(activeSocket, serverFile) {
             Object.assign(serverInfo, fullServerDetails.serverInfo.ServerInfo)
             latestKDAs.mapLabel = serverInfo.mapLabel
             serverInfo.thisGameId = uuidv4()
+            logScraper.setCurrentGameID(serverInfo.thisGameId)
             latestKDAs.allKDASum = allKDASum
             latestKDAs.MapLabel = serverInfo.MapLabel
             latestKDAs.isNewRound = true
