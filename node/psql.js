@@ -39,9 +39,9 @@ async function writeReport(report) {
     return res.rows
 }
 
-async function writeKillData(killDataObj){
-    const thisQuery = `INSERT INTO killstream (gameid, killer, killed, killedby, headshot) VALUES ($<gameid>, $<Killer>, $<Killed>, $<Killedby>, $<Headshot>)`
-    const res = await pool.query(thisQuery, [killDataObj])
+async function writeKillData(gameid, killer, killed, killedby, headshot){
+    const thisQuery = `INSERT INTO killstream (gameid, killer, killed, killedby, headshot) VALUES ($1,$2,$3,$4,$5)`
+    const res = await pool.query(thisQuery, killDataObj)
     return res.rows
 }
 

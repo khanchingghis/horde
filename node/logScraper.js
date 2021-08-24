@@ -37,7 +37,7 @@ async function watchLog() {
                     jsonObj = JSON.parse(jsonStr)
                     jsonObj.gameid = currentGameId
                     console.log(jsonObj)
-                    psql.writeKillData(jsonObj)
+                    handleObjectSend(jsonObj)
                      //clear collection
                      collectionArr = []
                 } catch (e) {
@@ -63,6 +63,11 @@ async function watchLog() {
         console.log('ERROR: ', error);
     });
 
+}
+
+async function handleObjectSend(obj){
+    const sendRes = await psql.writeKillData(currentGameId,obj.Killer,obj.Killed,obj.KilledBy,obj.Headshot)
+    return sendRes
 }
 
 module.exports = {watchLog, setCurrentGameID, currentGameId}
