@@ -65,4 +65,4 @@ async function watchLog() {
 
 }
 
-module.exports = {watchLog, setCurrentGameID, currentGame}
+module.exports = {watchLog, setCurrentGameID, currentGameId}
