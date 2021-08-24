@@ -1,7 +1,7 @@
 const fs = require('fs')
 const psql = require('./psql')
 Tail = require('tail').Tail;
-let currentGameId = ''
+let currentGameId = 'test'
 
 async function setCurrentGameID(gameid){
     currentGameId = gameid
@@ -66,8 +66,11 @@ async function watchLog() {
 }
 
 async function handleObjectSend(obj){
-    const sendRes = await psql.writeKillData(currentGameId,obj.Killer,obj.Killed,obj.KilledBy,obj.Headshot)
+    const keys = Object.keys(obj)
+    console.log(keys[0])
+    const {Killer, Killed, KilledBy, Headshot} = obj.KillData
+    const sendRes = await psql.writeKillData(currentGameId,Killer, Killed, KilledBy, Headshot)
     return sendRes
 }
 
-module.exports = {watchLog, setCurrentGameID, currentGameId}
+module.exports = {handleObjectSend, watchLog, setCurrentGameID, currentGameId}
