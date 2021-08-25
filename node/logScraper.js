@@ -61,7 +61,7 @@ async function handleAllStats(obj){
         const { playerid, Kill, Death, Assist, Headshot, TeamKill, BombDefused, BombPlanted, Experience } = playerStatObj
         return `${playerid} K/D/A/XP - ${Kill}/${Death}/${Assist}/${Experience}`
     })
-    const allStatMsg = `Game Over. Final Stats: \n${playerStatMsg.join('\n')}`
+    const allStatMsg = `**GAME OVER**. Final Stats: \n${playerStatMsg.join('\n')}`
     bot.sendDiscordMessage(allStatMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
@@ -72,7 +72,7 @@ async function handleBombData(obj){
     await psql.writeBombData(currentGameId,Player,BombInteraction)
 
     //Send msg
-    const bombMsg = BombInteraction == 'BombPlanted' ? `${Player} has planted the bomb!` : `${Player} has defused the bomb!`
+    const bombMsg = BombInteraction == 'BombPlanted' ? `**${Player} has planted the bomb!**` : `${Player} has defused the bomb!`
     bot.sendDiscordMessage(bombMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
@@ -83,7 +83,7 @@ async function handleRoundEnd(obj){
     await psql.writeRoundData(currentGameId,Round,WinningTeam)
 
     //Send msg
-    const roundMsg = `${WinningTeam == 0 ? 'Red' : 'Blue'} Team has won Round ${Round}`
+    const roundMsg = `${WinningTeam == 0 ? '**Red' : '**Blue'} Team** has won Round ${Round}`
     bot.sendDiscordMessage(roundMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
