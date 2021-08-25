@@ -190,10 +190,11 @@ async function postScores(activeSocket, serverFile) {
             } else {
                 console.log('No webhook.')
             }
-            }
+            const newGamRes = await psql.writeGameID(serverInfo.thisGameId, serverInfo)
+        }
 
-            const newGamRes = await psql.writeGameID(serverInfo.thisGameId,serverInfo)
             
+
         const res = await psql.sendData(playerList, serverInfo)
             .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
             .catch(e => console.log('SQL Error:', e))
