@@ -32,7 +32,7 @@ async function handleKillData(obj){
     const sendRes = await psql.writeKillData(currentGameId,Killer, Killed, KilledBy, Headshot)
  
     //Send Kill Msg
-    const killMsg = `${Headshot && 'BOOM HEADSHOT!!'} ${Killer} killed ${Killed} with ${KilledBy}`
+    const killMsg = `${Headshot ? '**HEADSHOT!**' : ''} ${Killer} killed ${Killed} with ${KilledBy}`
     bot.sendDiscordMessage(killMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
