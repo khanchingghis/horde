@@ -30,10 +30,12 @@ async function handleKillData(obj){
     //Store in DB
     const {Killer, Killed, KilledBy, Headshot} = obj.KillData
     const sendRes = await psql.writeKillData(currentGameId,Killer, Killed, KilledBy, Headshot)
-    console.log(`Sent killdata`, sendRes)
+ 
     //Send Kill Msg
     const killMsg = `${Headshot && 'BOOM HEADSHOT!!'} ${Killer} killed ${Killed} with ${KilledBy}`
     bot.sendDiscordMessage(killMsg)
+
+    console.log(`Sent ${Object.keys(obj)[0]}`)
 }
 
 async function handleAllStats(obj){
@@ -52,7 +54,7 @@ async function handleAllStats(obj){
     })
 
     const sendRes = await Promise.all(promArr)
-    console.log(`Sent allStats`, sendRes)
+    
 
     //Send AllStats Msg
     const playerStatMsg = playerStats.map(playerStatObj => {
@@ -61,6 +63,8 @@ async function handleAllStats(obj){
     })
     const allStatMsg = `Game Over. Final Stats: \n${playerStatMsg.join('\n')}`
     bot.sendDiscordMessage(allStatMsg)
+
+    console.log(`Sent ${Object.keys(obj)[0]}`)
 }
 
 async function handleBombData(obj){
@@ -70,6 +74,8 @@ async function handleBombData(obj){
     //Send msg
     const bombMsg = BombInteraction == 'BombPlanted' ? `${Player} has planted the bomb!` : `${Player} has defused the bomb!`
     bot.sendDiscordMessage(bombMsg)
+
+    console.log(`Sent ${Object.keys(obj)[0]}`)
 }
 
 async function handleRoundEnd(obj){
@@ -79,6 +85,8 @@ async function handleRoundEnd(obj){
     //Send msg
     const roundMsg = `${WinningTeam == 0 ? 'Red' : 'Blue'} Team has won Round ${Round}`
     bot.sendDiscordMessage(roundMsg)
+
+    console.log(`Sent ${Object.keys(obj)[0]}`)
 }
 
 async function watchLog() {
@@ -107,7 +115,6 @@ async function watchLog() {
                     //handle object
                     jsonObj = JSON.parse(jsonStr)
                     jsonObj.gameid = currentGameId
-                    console.log(jsonObj)
                     handleObject(jsonObj)
                      //clear collection
                      collectionArr = []
