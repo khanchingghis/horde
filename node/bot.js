@@ -2,16 +2,20 @@ const axios = require('axios')
 const readline = require('readline')
 const fs = require('fs')
 
-async function sendDiscordMessage(msg, webhookurl) {
+const webhook = require('./serverOptions.json').webhook
+
+async function sendDiscordMessage(msg) {
 
     const sendObj = {
         "content": msg,
         'username':"Horde",
         'avatar_url': "https://pavlovhorde.com/static/PHorde2-0f28d87f6d78c882bb2061c2ab9d5f67.png"
     }
-    axios.post(webhookurl,
+    if (webhook) {
+    axios.post(webhook,
         sendObj
     )
+    }
 }
 
 function capFirst(string) {

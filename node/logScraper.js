@@ -2,13 +2,84 @@ const fs = require('fs')
 const psql = require('./psql')
 Tail = require('tail').Tail;
 let currentGameId = 'test'
+const bot = require('./bot')
 
-async function setCurrentGameID(gameid){
+function setCurrentGameID(gameid){
     currentGameId = gameid
 }
 
-
 const remoteLogPath = '/home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log'
+
+
+
+async function handleObject(obj){
+    const keys = Object.keys(obj)
+    const statType = keys[0]
+    switch (statType){
+        case "KillData": await handleKillData(obj); break;
+        case "allStats": await handleAllStats(obj); break;
+        case "BombData": await handleBombData(obj); break;
+        case "RoundEnd": await handleRoundEnd(obj); break;
+        default: console.log(keys[0], 'Not recognised')
+    }
+    
+}
+
+async function handleKillData(obj){
+    
+    //Store in DB
+    const {Killer, Killed, KilledBy, Headshot} = obj.KillData
+    const sendRes = await psql.writeKillData(currentGameId,Killer, Killed, KilledBy, Headshot)
+    console.log(`Sent killdata`, sendRes)
+    //Send Kill Msg
+    const killMsg = `${Headshot && 'BOOM HEADSHOT!!'} ${Killer} killed ${Killed} with ${KilledBy}`
+    bot.sendDiscordMessage(killMsg)
+}
+
+async function handleAllStats(obj){
+
+    //Store in DB
+    const playerStats = obj.allStats.map(stat => {
+        const playerid = stat.uniqueId
+        const playerStatsArr = stat.stats
+        let playerStatObj = {playerid}
+        playerStatsArr.forEach(ps => { playerStatObj[ps.statType] = ps.amount })
+        return playerStatObj
+    })
+    const promArr = playerStats.map(playerStatObj => {
+        const { Kill, Death, Assist, Headshot, TeamKill, BombDefused, BombPlanted, Experience } = playerStatObj
+        return psql.writeStatData(currentGameId, playerid, Kill, Death, Assist, Headshot, Experience, TeamKill, BombPlanted, BombDefused)
+    })
+
+    const sendRes = await Promise.all(promArr)
+    console.log(`Sent allStats`, sendRes)
+
+    //Send AllStats Msg
+    const playerStatMsg = playerStats.map(playerStatObj => {
+        const { playerid, Kill, Death, Assist, Headshot, TeamKill, BombDefused, BombPlanted, Experience } = playerStatObj
+        return `${playerid} K/D/A/XP - ${Kill}/${Death}/${Assist}/${Experience}`
+    })
+    const allStatMsg = `Game Over. Final Stats: \n${playerStatMsg.join('\n')}`
+    bot.sendDiscordMessage(allStatMsg)
+}
+
+async function handleBombData(obj){
+    const {Player, BombInteraction} = obj.BombData
+    await psql.writeBombData(currentGameId,Player,BombInteraction)
+
+    //Send msg
+    const bombMsg = BombInteraction == 'BombPlanted' ? `${Player} has planted the bomb!` : `${Player} has defused the bomb!`
+    bot.sendDiscordMessage(bombMsg)
+}
+
+async function handleRoundEnd(obj){
+    const {Round, WinningTeam} = obj.RoundEnd
+    await psql.writeRoundData(currentGameId,Round,WinningTeam)
+
+    //Send msg
+    const roundMsg = `${WinningTeam == 0 ? 'Red' : 'Blue'} Team has won Round ${Round}`
+    bot.sendDiscordMessage(roundMsg)
+}
 
 async function watchLog() {
     
@@ -37,7 +108,7 @@ async function watchLog() {
                     jsonObj = JSON.parse(jsonStr)
                     jsonObj.gameid = currentGameId
                     console.log(jsonObj)
-                    handleObjectSend(jsonObj)
+                    handleObject(jsonObj)
                      //clear collection
                      collectionArr = []
                 } catch (e) {
@@ -58,19 +129,6 @@ async function watchLog() {
 
 
     });
-
-    tail.on("error", function (error) {
-        console.log('ERROR: ', error);
-    });
-
 }
 
-async function handleObjectSend(obj){
-    const keys = Object.keys(obj)
-    console.log(keys[0])
-    const {Killer, Killed, KilledBy, Headshot} = obj.KillData
-    const sendRes = await psql.writeKillData(currentGameId,Killer, Killed, KilledBy, Headshot)
-    return sendRes
-}
-
-module.exports = {handleObjectSend, watchLog, setCurrentGameID, currentGameId}
+module.exports = {handleObject, watchLog, setCurrentGameID, currentGameId}

@@ -27,6 +27,7 @@ let serverInfo = {
     "thisGameId": uuidv4()
 }
 let playerList = []
+logScraper.setCurrentGameID(serverInfo.thisGameId)
 
 function getPSQLSettings() {
     const psqlOptionsPath = 'psqlOptions.json'
@@ -185,19 +186,21 @@ async function postScores(activeSocket, serverFile) {
             latestKDAs.MapLabel = serverInfo.MapLabel
             latestKDAs.isNewRound = true
             if (webhookUrl) {
-                dMsg.sendDiscordMessage(`New Game Starting on ${serverInfo.MapLabel}!`, webhookUrl)
+                dMsg.sendDiscordMessage(`New Game Starting on ${serverInfo.MapLabel}!`)
             } else {
                 console.log('No webhook.')
             }
             }
 
+            const newGamRes = await psql.writeGameID(serverInfo.thisGameId,serverInfo)
+            
         const res = await psql.sendData(playerList, serverInfo)
             .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
             .catch(e => console.log('SQL Error:', e))
 
         if (webhookUrl && isPlayerCountChanged) {
             const discordMsg = makeDiscordUpdateServerMessage(playerList, serverInfo)
-            const dRes = await dMsg.sendDiscordMessage(discordMsg, webhookUrl)
+            const dRes = await dMsg.sendDiscordMessage(discordMsg)
         }
 
         latestKDAs.allKDASum = allKDASum

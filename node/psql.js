@@ -45,4 +45,28 @@ async function writeKillData(gameid, killer, killed, killedby, headshot){
     return res.rows
 }
 
-module.exports = { writeReport, sendData, logData, writeKillData }
+async function writeStatData(gameid, playerid, kill, death, assist, headshot, experience, teamkill, bombplanted, bombdefused){
+    const thisQuery = `INSERT INTO allstats (gameid, playerid, kill, death, assist, headshot, experience, teamkill, bombplanted, bombdefused) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`
+    const res = await pool.query(thisQuery, [gameid, playerid, kill, death, assist, headshot, experience, teamkill, bombplanted, bombdefused])
+    return res.rows
+}
+
+async function writeBombData(gameid, playerid, interaction){
+    const thisQuery = `INSERT INTO bombstats (gameid, playerid, interaction) VALUES ($1,$2,$3)`
+    const res = await pool.query(thisQuery, [gameid, playerid, interaction])
+    return res.rows
+}
+
+async function writeRoundData(gameid, roundno, winningteam){
+    const thisQuery = `INSERT INTO roundstats (gameid, roundno, winningteam) VALUES ($1,$2,$3)`
+    const res = await pool.query(thisQuery, [gameid, roundno, winningteam])
+    return res.rows
+}
+
+async function writeGameID(gameid, serverinfo){
+    const thisQuery = `INSERT INTO gamestats (gameid, serverinfo) VALUES ($1,$2)`
+    const res = await pool.query(thisQuery, [gameid, serverinfo])
+    return res.rows
+}
+
+module.exports = { writeReport, sendData, logData, writeKillData, writeStatData, writeBombData, writeRoundData, writeGameID }
