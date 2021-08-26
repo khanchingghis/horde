@@ -230,7 +230,7 @@ function addToCumulativePL(pl){
     // console.log('Adding:',pl.length)
     let thisPL = playerListCumulative.playerList
     pl.forEach(p=>{
-        const existingPi = existingPL.findIndex(pc =>pc.PlayerInfo.UniqueId == p.PlayerInfo.UniqueId)
+        const existingPi = thisPL.findIndex(pc =>pc.PlayerInfo.UniqueId == p.PlayerInfo.UniqueId)
         if (existingPi > -1){
             existingPL[existingPi] = p
         } else {
