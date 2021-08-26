@@ -29,7 +29,7 @@ async function handleKillData(obj) {
     
     // const thisPlayerList = score.playerListCumulative.playerList
     // console.log(Killer,'PLLength:',thisPlayerList)
-    console.log('LocalCumList:',score.playerListCumulative.playerList)
+    console.log('LocalCumList:',score.playerListCumulative.playerList.length)
     const killerPL = score.playerListCumulative.playerList.find(p=>p.PlayerInfo.UniqueId == Killer)
     const killedPL = score.playerListCumulative.playerList.find(p=>p.PlayerInfo.UniqueId == Killed)
     let isTK = false
