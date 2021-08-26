@@ -54,7 +54,6 @@ async function handleAllStats(obj) {
         playerStatObj.TeamId = thisPlayerTeam
         return playerStatObj
     })
-    console.log('PlayerStats:',JSON.stringify(playerStats))
 
     //Write to DB
     const promArr = playerStats.map(playerStatObj => {
@@ -67,7 +66,7 @@ async function handleAllStats(obj) {
 
     //Send AllStats Msg
     const playerStatsSorted = playerStats.sort((a, b) => b.Experience - a.Experience)
-    console.log('PlayerStatsSorted:',JSON.stringify(playerStatsSorted))
+    console.log('PlayerStatsSorted:',playerStatsSorted)
     let playerStatMsgArr = []
 
     playerStatMsgArr.push(`**Name**: ${ServerName}`)

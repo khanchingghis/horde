@@ -28,6 +28,7 @@ let serverInfo = {
 let playerList = []
 
 let playerListCumulative = []
+addToCumulativePL(playerList)
 
 function getPSQLSettings() {
     const psqlOptionsPath = 'psqlOptions.json'
@@ -143,7 +144,6 @@ async function postScores(activeSocket, serverFile) {
     if (thisServer.playerList.length != playerList.length) isPlayerCountChanged = true
 
     playerList = thisServer.playerList
-    addToCumulativePL(playerList)
     thisServerInfo = thisServer.serverInfo.ServerInfo
     Object.assign(serverInfo, thisServerInfo)
 
@@ -201,9 +201,12 @@ async function postScores(activeSocket, serverFile) {
             .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
             .catch(e => console.log('SQL Error:', e))
 
-        if (webhookUrl && isPlayerCountChanged) {
+        if (isPlayerCountChanged) {
+            if (webhookUrl){
             const discordMsg = makeDiscordUpdateServerMessage(playerList, serverInfo)
             const dRes = await dMsg.sendDiscordMessage(discordMsg)
+            }
+            addToCumulativePL(playerList)
         }
 
         latestKDAs.allKDASum = allKDASum
@@ -223,7 +226,7 @@ async function postScores(activeSocket, serverFile) {
 }
 
 function addToCumulativePL(pl){
-    console.log('Adding:',pl.length)
+    // console.log('Adding:',pl.length)
     pl.forEach(p=>{
         const existingPi = playerListCumulative.findIndex(pc =>pc.PlayerInfo.UniqueId == p.PlayerInfo.UniqueId)
         if (existingPi > -1){
@@ -233,7 +236,7 @@ function addToCumulativePL(pl){
         }
         
     })
-    console.log('Cumulative:',playerListCumulative.length)
+    console.log('Cumulative Players:',playerListCumulative.length,playerListCumulative)
 }
 
 function calcRound(playerList, serverInfo) {
