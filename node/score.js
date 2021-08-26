@@ -240,7 +240,8 @@ function addToCumulativePL(pl){
         }
         
     })
-    Object.assign(playerListCumulative.playerList,thisPL)
+    const newPlayerListCumulative = {playerList:[...thisPL]}
+    playerListCumulative = newPlayerListCumulative
     console.log('Cumulative Players:', thisPL.length)
 }
 
