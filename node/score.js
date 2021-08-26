@@ -240,8 +240,8 @@ function addToCumulativePL(pl){
         }
         
     })
-    playerListCumulative.playerList = thisPL
-    console.log('Cumulative Players:',thisPL.length)
+    Object.assign(playerListCumulative.playerList,thisPL)
+    console.log('Cumulative Players:', thisPL.length)
 }
 
 function calcRound(playerList, serverInfo) {
