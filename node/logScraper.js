@@ -31,8 +31,9 @@ async function handleKillData(obj) {
     // console.log(Killer,'PLLength:',thisPlayerList)
     const killerPL = thisPlayerList.find(p=>p.PlayerInfo.UniqueId == Killer)
     const killedPL = thisPlayerList.find(p=>p.PlayerInfo.UniqueId == Killed)
+    let isTK = false
     try{
-    const isTK = score.serverInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
+    isTK = score.serverInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
     } catch(e){
         console.log('No Match',Killer,Killed,thisPlayerList)
     }
