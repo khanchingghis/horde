@@ -79,31 +79,30 @@ async function handleAllStats(obj) {
         const blueTeamPlayers = playerStatsSorted.filter(p => p.TeamId == 1)
         const scoresMsg = `Red: ${score.serverInfo.Team0Score} | Blue: ${score.serverInfo.Team1Score}`
 
-        const redTeamMsgArr = redTeamPlayers.map(p => {
-            const { playerid, Kill, Death, Assist, Headshot, TeamKill, BombDefused, BombPlanted, Experience } = p
-            return `${playerid} K/D/A/XP - ${Kill}/${Death}/${Assist}/${Experience}`
-        })
+        const redTeamMsgArr = constructStatsMsgArr(redTeamPlayers)
 
-        const blueTeamMsgArr = blueTeamPlayers.map(p => {
-            const { playerid, Kill, Death, Assist, Headshot, TeamKill, BombDefused, BombPlanted, Experience } = p
-            return `${playerid} K/D/A/XP - ${Kill}/${Death}/${Assist}/${Experience}`
-        })
+        const blueTeamMsgArr = constructStatsMsgArr(blueTeamPlayers)
 
         playerStatMsgArr.push(`**Red: ${score.serverInfo.Team0Score} Points**`, ...redTeamMsgArr, `**Blue: ${score.serverInfo.Team1Score} Points**`, ...blueTeamMsgArr)
 
     } else {
-        playerStatMsgArr = playerStatsSorted.map(playerStatObj => {
-
-            const { playerid, Kill, Death, Assist, Headshot, TeamKill, BombDefused, BombPlanted, Experience } = playerStatObj
-
-            return `${playerid} K/D/A/XP - ${Kill}/${Death}/${Assist}/${Experience}`
-        })
+        playerStatMsgArr = constructStatsMsgArr(playerStatsSorted)
     }
 
     const allStatMsg = `**GAME OVER**. Final Stats: \n${playerStatMsgArr.join('\n')}`
     bot.sendDiscordMessage(allStatMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
+}
+
+function constructStatsMsgArr(playerStatsArr) {
+    const playerStatsMsg = playerStatsArr.map(playerStatObj => {
+
+        const { playerid, Kill, Death, Assist, Headshot, TeamKill, BombDefused, BombPlanted, Experience } = playerStatObj
+
+        return `${playerid} K/D/A/XP - ${Kill || 0}/${Death || 0}/${Assist || 0}/${Experience || 0}`
+    })
+    return playerStatsMsg
 }
 
 async function handleBombData(obj) {
