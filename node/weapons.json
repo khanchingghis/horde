@@ -1,0 +1,9 @@
+{
+    "weapons": [
+        {
+            "code": "knife",
+            "name": "Knife",
+            "emoji": "🗡️"
+        }
+    ]
+}

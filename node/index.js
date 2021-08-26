@@ -4,10 +4,16 @@ const logScraper = require('./logScraper')
 
 async function initAsync(){
 score.init()
-    .then(x => console.log('Crashed:', x))
-    .catch(e=>console.log('Crashed:', e))
+    .then(x =>{
+        console.log('Closed:', x)
+        process.exit()
+    })
+    .catch(e=>{
+        console.log('Crashed:', e)
+        process.exit()
+    })
 
-    await sleep(1000)
+    await sleep(5000)
     logScraper.watchLog()
 }
 
