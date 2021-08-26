@@ -5,6 +5,7 @@ const bot = require('./bot')
 const score = require('./score')
 
 let currentGameId = score.serverInfo.thisGameId
+let playerListCumulative = score.playerListCumulative.playerList
 
 const remoteLogPath = '/home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log'
 
@@ -29,9 +30,9 @@ async function handleKillData(obj) {
     const { Killer, Killed, KilledBy, Headshot } = obj.KillData
     const sendRes = await psql.writeKillData(currentGameId, Killer, Killed, KilledBy, Headshot)
     
-    console.log(Killer,score.playerListCumulative)
-    const killerPL = score.playerListCumulative.find(p=>p.PlayerInfo.uniqueId == Killer)
-    const killedPL = score.playerListCumulative.find(p=>p.PlayerInfo.uniqueId == Killed)
+    console.log(Killer,playerListCumulative)
+    const killerPL = playerListCumulative.find(p=>p.PlayerInfo.uniqueId == Killer)
+    const killedPL = playerListCumulative.find(p=>p.PlayerInfo.uniqueId == Killed)
     const isTK =  score.serverInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
 
     //Send Kill Msg
@@ -44,7 +45,7 @@ async function handleKillData(obj) {
 async function handleAllStats(obj) {
 
     const { MapLabel, ServerName, GameMode, PlayerCount, Teams } = score.serverInfo
-    console.log('RCON:',score.serverInfo, score.playerList, score.playerListCumulative)
+    console.log('RCON:',score.serverInfo, score.playerList, playerListCumulative)
     
     let isTeamGame = Teams
     //Process players Obj
@@ -53,7 +54,7 @@ async function handleAllStats(obj) {
         const playerStatsArr = stat.stats
         let playerStatObj = { playerid }
         playerStatsArr.forEach(ps => { playerStatObj[ps.statType] = ps.amount })
-        const thisPlayerInfo = score.playerListCumulative.find(p => p.PlayerInfo.UniqueId == playerid)
+        const thisPlayerInfo = playerListCumulative.find(p => p.PlayerInfo.UniqueId == playerid)
         const thisPlayerTeam = thisPlayerInfo && thisPlayerInfo.PlayerInfo.TeamId
         playerStatObj.TeamId = thisPlayerTeam
         return playerStatObj

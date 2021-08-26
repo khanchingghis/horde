@@ -27,7 +27,7 @@ let serverInfo = {
 }
 let playerList = []
 
-let playerListCumulative = []
+let playerListCumulative = {playerList}
 addToCumulativePL(playerList)
 
 function getPSQLSettings() {
@@ -229,16 +229,17 @@ async function postScores(activeSocket, serverFile) {
 
 function addToCumulativePL(pl){
     // console.log('Adding:',pl.length)
+    const existingPL = playerListCumulative.playerList
     pl.forEach(p=>{
-        const existingPi = playerListCumulative.findIndex(pc =>pc.PlayerInfo.UniqueId == p.PlayerInfo.UniqueId)
+        const existingPi = existingPL.findIndex(pc =>pc.PlayerInfo.UniqueId == p.PlayerInfo.UniqueId)
         if (existingPi > -1){
-            playerListCumulative[existingPi] = p
+            existingPL[existingPi] = p
         } else {
-            playerListCumulative.push(p)
+            existingPL.push(p)
         }
         
     })
-    console.log('Cumulative Players:',playerListCumulative.length)
+    console.log('Cumulative Players:',existingPL.length)
 }
 
 function calcRound(playerList, serverInfo) {
