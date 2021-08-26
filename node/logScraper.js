@@ -4,9 +4,8 @@ Tail = require('tail').Tail;
 const bot = require('./bot')
 const score = require('./score')
 
-let currentServerInfo = score.serverInfo
-let currentGameId = currentServerInfo.thisGameId
-let currentPlayerList = score.playerListCumulative
+let currentServerInfo = {}
+let currentPlayerList = {}
 
 const remoteLogPath = '/home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log'
 
@@ -27,7 +26,7 @@ async function handleKillData(obj) {
 
     //Store in DB
     const { Killer, Killed, KilledBy, Headshot } = obj.KillData
-    const sendRes = await psql.writeKillData(currentGameId, Killer, Killed, KilledBy, Headshot)
+    const sendRes = await psql.writeKillData(currentServerInfo.gameid, Killer, Killed, KilledBy, Headshot)
     
     // const thisPlayerList = score.playerListCumulative.playerList
     // console.log(Killer,'PLLength:',thisPlayerList)
@@ -72,7 +71,7 @@ async function handleAllStats(obj) {
     //Write to DB
     const promArr = playerStats.map(playerStatObj => {
         const { Kill, Death, Assist, Headshot, TeamKill, BombDefused, BombPlanted, Experience, playerid } = playerStatObj
-        return psql.writeStatData(currentGameId, playerid, Kill, Death, Assist, Headshot, Experience, TeamKill, BombPlanted, BombDefused)
+        return psql.writeStatData(currentServerInfo.gameid, playerid, Kill, Death, Assist, Headshot, Experience, TeamKill, BombPlanted, BombDefused)
     })
 
     const sendRes = await Promise.all(promArr)
@@ -138,7 +137,7 @@ function constructStatsMsgArrSingleDetail(playerStatsArr,objectKey){
 
 async function handleBombData(obj) {
     const { Player, BombInteraction } = obj.BombData
-    await psql.writeBombData(currentGameId, Player, BombInteraction)
+    await psql.writeBombData(currentServerInfo.gameid, Player, BombInteraction)
 
     //Send msg
     const bombMsg = BombInteraction == 'BombPlanted' ? `**${Player} has planted the bomb!**` : `${Player} has defused the bomb!`
@@ -149,7 +148,7 @@ async function handleBombData(obj) {
 
 async function handleRoundEnd(obj) {
     const { Round, WinningTeam } = obj.RoundEnd
-    await psql.writeRoundData(currentGameId, Round, WinningTeam)
+    await psql.writeRoundData(currentServerInfo.gameid, Round, WinningTeam)
 
     const scoresMsg = `Red: ${currentServerInfo.Team0Score} | Blue: ${currentServerInfo.Team1Score}`
 
@@ -185,7 +184,7 @@ async function watchLog() {
                 try {
                     //handle object
                     jsonObj = JSON.parse(jsonStr)
-                    jsonObj.gameid = currentGameId
+                    jsonObj.gameid = currentServerInfo.gameid
                     handleObject(jsonObj)
                     //clear collection
                     collectionArr = []
