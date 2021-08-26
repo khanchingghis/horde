@@ -30,9 +30,10 @@ async function handleKillData(obj) {
     const { Killer, Killed, KilledBy, Headshot } = obj.KillData
     const sendRes = await psql.writeKillData(currentGameId, Killer, Killed, KilledBy, Headshot)
     
-    console.log(Killer,'PLLength:',playerListCumulative.length)
-    const killerPL = playerListCumulative.find(p=>p.PlayerInfo.uniqueId == Killer)
-    const killedPL = playerListCumulative.find(p=>p.PlayerInfo.uniqueId == Killed)
+    const thisPlayerList = score.playerListCumulative.playerList
+    console.log(Killer,'PLLength:',thisPlayerList.length)
+    const killerPL = thisPlayerList.find(p=>p.PlayerInfo.uniqueId == Killer)
+    const killedPL = thisPlayerList.find(p=>p.PlayerInfo.uniqueId == Killed)
     const isTK =  score.serverInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
 
     //Send Kill Msg

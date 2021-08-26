@@ -143,6 +143,7 @@ async function postScores(activeSocket, serverFile) {
     if (thisServer.playerList.length != playerList.length) isPlayerCountChanged = true
 
     playerList = thisServer.playerList
+    addToCumulativePL(playerList)
     thisServerInfo = thisServer.serverInfo.ServerInfo
     Object.assign(serverInfo, thisServerInfo)
 
