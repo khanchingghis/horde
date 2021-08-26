@@ -178,6 +178,7 @@ async function postScores(activeSocket, serverFile) {
         if ((allKDASum == 0 && allKDASum != prevKDASum) || thisMap != prevMap) {
             //New Game
             await waitMS(3000)
+            
             const fullServerDetails = await servers.getFullServerInfo(activeSocket).catch(e => console.log)
             Object.assign(serverInfo, fullServerDetails.serverInfo.ServerInfo)
             latestKDAs.mapLabel = serverInfo.mapLabel
@@ -185,6 +186,7 @@ async function postScores(activeSocket, serverFile) {
             latestKDAs.allKDASum = allKDASum
             latestKDAs.MapLabel = serverInfo.MapLabel
             latestKDAs.isNewRound = true
+            console.log('New Game!',fullServerDetails)
             if (webhookUrl) {
                 dMsg.sendDiscordMessage(`New Game Starting on ${serverInfo.MapLabel}!`)
             } else {
