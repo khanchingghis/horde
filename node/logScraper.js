@@ -28,7 +28,7 @@ async function handleKillData(obj) {
     //Store in DB
     const { Killer, Killed, KilledBy, Headshot } = obj.KillData
     const sendRes = await psql.writeKillData(currentGameId, Killer, Killed, KilledBy, Headshot)
-    console.log('RCON:',score.serverInfo, score.playerList)
+    
 
     //Send Kill Msg
     const killMsg = `${Headshot ? '**HEADSHOT!**' : ''} ${Killer} killed ${Killed} with ${KilledBy}`
@@ -40,7 +40,7 @@ async function handleKillData(obj) {
 async function handleAllStats(obj) {
 
     const { MapLabel, ServerName, GameMode, PlayerCount, Teams } = score.serverInfo
-    console.log('RCON:',score.serverInfo, score.playerList)
+    console.log('RCON:',score.serverInfo, score.playerList, score.playerListCumulative)
     
     let isTeamGame = Teams
     //Process players Obj
@@ -49,7 +49,7 @@ async function handleAllStats(obj) {
         const playerStatsArr = stat.stats
         let playerStatObj = { playerid }
         playerStatsArr.forEach(ps => { playerStatObj[ps.statType] = ps.amount })
-        const thisPlayerInfo = score.playerList.find(p => p.PlayerInfo.UniqueId == playerid)
+        const thisPlayerInfo = score.playerListCumulative.find(p => p.PlayerInfo.UniqueId == playerid)
         const thisPlayerTeam = thisPlayerInfo && thisPlayerInfo.PlayerInfo.TeamId
         playerStatObj.TeamId = thisPlayerTeam
         return playerStatObj

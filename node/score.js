@@ -27,6 +27,8 @@ let serverInfo = {
 }
 let playerList = []
 
+let playerListCumulative = []
+
 function getPSQLSettings() {
     const psqlOptionsPath = 'psqlOptions.json'
     const path = thisPath + `/${psqlOptionsPath}`
@@ -141,6 +143,7 @@ async function postScores(activeSocket, serverFile) {
     if (thisServer.playerList.length != playerList.length) isPlayerCountChanged = true
 
     playerList = thisServer.playerList
+    addToCumulativePL(playerList)
     thisServerInfo = thisServer.serverInfo.ServerInfo
     Object.assign(serverInfo, thisServerInfo)
 
@@ -188,6 +191,8 @@ async function postScores(activeSocket, serverFile) {
                 console.log('No webhook.')
             }
             const newGamRes = await psql.writeGameID(serverInfo.thisGameId, serverInfo)
+            playerListCumulative = []
+
         }
 
             
@@ -215,6 +220,18 @@ async function postScores(activeSocket, serverFile) {
 
     }
 
+}
+
+function addToCumulativePL(pl){
+    pl.forEach(p=>{
+        const existingPi = playerListCumulative.findIndex(pc =>pc.PlayerInfo.UniqueId == p.PlayerInfo.UniqueId)
+        if (existingPi > -1){
+            playerListCumulative[existingPi] = p
+        } else {
+            playerListCumulative.push(p)
+        }
+        
+    })
 }
 
 function calcRound(playerList, serverInfo) {
@@ -337,5 +354,5 @@ async function init() {
 
 }
 
-module.exports = { init, getPSQLSettings, serverInfo, playerList }
+module.exports = { init, getPSQLSettings, serverInfo, playerList, playerListCumulative }
 
