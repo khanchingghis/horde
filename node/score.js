@@ -28,7 +28,6 @@ let serverInfo = {
 let playerList = []
 
 let playerListCumulative = {playerList}
-addToCumulativePL(playerList)
 
 function getPSQLSettings() {
     const psqlOptionsPath = 'psqlOptions.json'
@@ -193,7 +192,7 @@ async function postScores(activeSocket, serverFile) {
                 console.log('No webhook.')
             }
             const newGamRes = await psql.writeGameID(serverInfo.thisGameId, serverInfo)
-            playerListCumulative = []
+            playerListCumulative = {playerList}
 
         }
 
