@@ -40,6 +40,7 @@ async function handleKillData(obj) {
     const killMsg = `${isTK ? '**TEAMKILL!**':''} ${Headshot ? '**HEADSHOT!**' : ''} ${Killer} > ${Killed} (${KilledBy})`
     bot.sendDiscordMessage(killMsg)
 
+    console.log(killerPL, killedPL)
     console.log(`Sent ${Object.keys(obj)[0]}`)
 }
 
