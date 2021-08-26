@@ -13,7 +13,7 @@ const myFormID = '1FAIpQLScOi8_7neH_71KM1AuS2PL2ZIs794eNv1u4ZunEz8WFuXwyBg'
 let iteration = 0
 const spinRateMS = 5000
 const cycleRateMS = 10000
-const logCyleInt = 1
+const logCyleInt = 10
 const logActiveCycleInt = 2
 
 let latestKDAs = {
@@ -236,7 +236,7 @@ function addToCumulativePL(pl){
         }
         
     })
-    console.log('Cumulative Players:',playerListCumulative.length,playerListCumulative)
+    console.log('Cumulative Players:',playerListCumulative.length)
 }
 
 function calcRound(playerList, serverInfo) {
