@@ -230,16 +230,16 @@ function addToCumulativePL(pl){
     // console.log('Adding:',pl.length)
     let thisPL = playerListCumulative.playerList
     pl.forEach(p=>{
-        const existingPi = thisPL.findIndex(pc =>pc.PlayerInfo.UniqueId == p.PlayerInfo.UniqueId)
-        if (existingPi > -1){
-            existingPL[existingPi] = p
+        const thisPi = thisPL.findIndex(pc =>pc.PlayerInfo.UniqueId == p.PlayerInfo.UniqueId)
+        if (thisPi > -1){
+            thisPL[thisPi] = p
         } else {
-            existingPL.push(p)
+            thisPL.push(p)
         }
         
     })
     playerListCumulative.playerList = thisPL
-    console.log('Cumulative Players:',existingPL.length)
+    console.log('Cumulative Players:',thisPL.length)
 }
 
 function calcRound(playerList, serverInfo) {
