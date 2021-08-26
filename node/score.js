@@ -7,6 +7,7 @@ const servers = require('./servers')
 const { v4: uuidv4 } = require('uuid');
 const psql = require('./psql')
 const dMsg = require('./bot')
+const logScraper = require('./logScraper')
 
 const myFormID = '1FAIpQLScOi8_7neH_71KM1AuS2PL2ZIs794eNv1u4ZunEz8WFuXwyBg'
 
@@ -146,6 +147,7 @@ async function postScores(activeSocket, serverFile) {
     addToCumulativePL(playerList)
     thisServerInfo = thisServer.serverInfo.ServerInfo
     Object.assign(serverInfo, thisServerInfo)
+    logScraper.updateLogServerInfo(serverInfo)
 
     let allKDASum = 0
     let allKSum = 0
@@ -193,7 +195,7 @@ async function postScores(activeSocket, serverFile) {
                 console.log('No webhook.')
             }
             const newGamRes = await psql.writeGameID(serverInfo.thisGameId, serverInfo)
-            playerListCumulative = {playerList}
+            logScraper.updateLogServerInfo(serverInfo)
 
         }
 
@@ -240,8 +242,7 @@ function addToCumulativePL(pl){
         }
         
     })
-    const newPlayerListCumulative = {playerList:[...thisPL]}
-    playerListCumulative = newPlayerListCumulative
+    logScraper.updateLogPlayerList(thisPL)
     console.log('Cumulative Players:', thisPL.length)
 }
 

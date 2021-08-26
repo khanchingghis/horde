@@ -5,6 +5,8 @@ const bot = require('./bot')
 const score = require('./score')
 
 let currentGameId = score.serverInfo.thisGameId
+let currentServerInfo = score.serverInfo
+let currentPlayerList = score.playerListCumulative
 
 const remoteLogPath = '/home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log'
 
@@ -29,15 +31,15 @@ async function handleKillData(obj) {
     
     // const thisPlayerList = score.playerListCumulative.playerList
     // console.log(Killer,'PLLength:',thisPlayerList)
-    console.log('LocalCumList:', score.playerListCumulative.playerList.length)
+    console.log('LocalCumList:', currentPlayerList)
 
-    const killerPL = score.playerListCumulative.playerList.find(p=>p.PlayerInfo.UniqueId == Killer)
-    const killedPL = score.playerListCumulative.playerList.find(p=>p.PlayerInfo.UniqueId == Killed)
+    const killerPL = currentPlayerList.find(p=>p.PlayerInfo.UniqueId == Killer)
+    const killedPL = currentPlayerList.playerList.find(p=>p.PlayerInfo.UniqueId == Killed)
     let isTK = false
     try{
-    isTK = score.serverInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
+    isTK = currentServerInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
     } catch(e){
-        console.log('No Match',Killer,Killed,score.playerListCumulative.playerList)
+        console.log('No Match',Killer,Killed,currentPlayerList)
     }
 
     //Send Kill Msg
@@ -51,8 +53,8 @@ async function handleKillData(obj) {
 
 async function handleAllStats(obj) {
 
-    const { MapLabel, ServerName, GameMode, PlayerCount, Teams } = score.serverInfo
-    console.log('RCON:',score.serverInfo, score.playerList)
+    const { MapLabel, ServerName, GameMode, PlayerCount, Teams } = currentServerInfo
+    console.log('RCON:',currentServerInfo, score.playerList)
     
     let isTeamGame = Teams
     //Process players Obj
@@ -61,7 +63,7 @@ async function handleAllStats(obj) {
         const playerStatsArr = stat.stats
         let playerStatObj = { playerid }
         playerStatsArr.forEach(ps => { playerStatObj[ps.statType] = ps.amount })
-        const thisPlayerInfo = score.playerListCumulative.playerList.find(p => p.PlayerInfo.UniqueId == playerid)
+        const thisPlayerInfo = currentPlayerList.find(p => p.PlayerInfo.UniqueId == playerid)
         const thisPlayerTeam = thisPlayerInfo && thisPlayerInfo.PlayerInfo.TeamId
         playerStatObj.TeamId = thisPlayerTeam
         return playerStatObj
@@ -89,13 +91,13 @@ async function handleAllStats(obj) {
     if (isTeamGame) {
         const redTeamPlayers = playerStatsSorted.filter(p => p.TeamId == 0)
         const blueTeamPlayers = playerStatsSorted.filter(p => p.TeamId == 1)
-        const scoresMsg = `Red: ${score.serverInfo.Team0Score} | Blue: ${score.serverInfo.Team1Score}`
+        const scoresMsg = `Red: ${currentServerInfo.Team0Score} | Blue: ${currentServerInfo.Team1Score}`
 
         const redTeamMsgArr = constructStatsMsgArr(redTeamPlayers)
 
         const blueTeamMsgArr = constructStatsMsgArr(blueTeamPlayers)
 
-        playerStatMsgArr.push(`**Red: ${score.serverInfo.Team0Score} Points**`, ...redTeamMsgArr, `**Blue: ${score.serverInfo.Team1Score} Points**`, ...blueTeamMsgArr)
+        playerStatMsgArr.push(`**Red: ${currentServerInfo.Team0Score} Points**`, ...redTeamMsgArr, `**Blue: ${currentServerInfo.Team1Score} Points**`, ...blueTeamMsgArr)
 
     } else {
         playerStatMsgArr = constructStatsMsgArr(playerStatsSorted)
@@ -149,7 +151,7 @@ async function handleRoundEnd(obj) {
     const { Round, WinningTeam } = obj.RoundEnd
     await psql.writeRoundData(currentGameId, Round, WinningTeam)
 
-    const scoresMsg = `Red: ${score.serverInfo.Team0Score} | Blue: ${score.serverInfo.Team1Score}`
+    const scoresMsg = `Red: ${currentServerInfo.Team0Score} | Blue: ${currentServerInfo.Team1Score}`
 
     //Send msg
     const roundMsg = `${WinningTeam == 0 ? '**Red' : '**Blue'} Team** has won Round ${Round}\n${scoresMsg}`
@@ -207,4 +209,12 @@ async function watchLog() {
     });
 }
 
-module.exports = { handleObject, watchLog }
+function updateLogPlayerList(playerList){
+    currentPlayerList = playerList
+}
+
+function updateLogServerInfo(serverinfo){
+    currentServerInfo = serverinfo
+}
+
+module.exports = { handleObject, watchLog, updateLogPlayerList, updateLogServerInfo }
