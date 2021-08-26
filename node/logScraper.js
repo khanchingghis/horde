@@ -28,9 +28,9 @@ async function handleKillData(obj) {
     const sendRes = await psql.writeKillData(currentGameId, Killer, Killed, KilledBy, Headshot)
     
     const thisPlayerList = score.playerListCumulative.playerList
-    console.log(Killer,'PLLength:',thisPlayerList)
-    const killerPL = thisPlayerList.find(p=>p.PlayerInfo.uniqueId == Killer)
-    const killedPL = thisPlayerList.find(p=>p.PlayerInfo.uniqueId == Killed)
+    // console.log(Killer,'PLLength:',thisPlayerList)
+    const killerPL = thisPlayerList.find(p=>p.PlayerInfo.UniqueId == Killer)
+    const killedPL = thisPlayerList.find(p=>p.PlayerInfo.UniqueId == Killed)
     const isTK = score.serverInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
 
     //Send Kill Msg
@@ -38,6 +38,7 @@ async function handleKillData(obj) {
     bot.sendDiscordMessage(killMsg)
 
     console.log(killerPL, killedPL)
+    console.log(killMsg)
     console.log(`Sent ${Object.keys(obj)[0]}`)
 }
 
