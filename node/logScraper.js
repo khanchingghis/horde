@@ -4,8 +4,8 @@ Tail = require('tail').Tail;
 const bot = require('./bot')
 const score = require('./score')
 
-let currentGameId = score.serverInfo.thisGameId
 let currentServerInfo = score.serverInfo
+let currentGameId = currentServerInfo.thisGameId
 let currentPlayerList = score.playerListCumulative
 
 const remoteLogPath = '/home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log'
