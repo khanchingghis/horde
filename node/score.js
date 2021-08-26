@@ -223,7 +223,7 @@ async function postScores(activeSocket, serverFile) {
 }
 
 function addToCumulativePL(pl){
-    console.log('Adding:',pl)
+    console.log('Adding:',pl.length)
     pl.forEach(p=>{
         const existingPi = playerListCumulative.findIndex(pc =>pc.PlayerInfo.UniqueId == p.PlayerInfo.UniqueId)
         if (existingPi > -1){
@@ -233,6 +233,7 @@ function addToCumulativePL(pl){
         }
         
     })
+    console.log('Cumulative:',playerListCumulative.length)
 }
 
 function calcRound(playerList, serverInfo) {
