@@ -223,6 +223,7 @@ async function postScores(activeSocket, serverFile) {
 }
 
 function addToCumulativePL(pl){
+    console.log('Adding:',pl)
     pl.forEach(p=>{
         const existingPi = playerListCumulative.findIndex(pc =>pc.PlayerInfo.UniqueId == p.PlayerInfo.UniqueId)
         if (existingPi > -1){
