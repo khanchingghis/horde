@@ -27,7 +27,6 @@ let serverInfo = {
     "thisGameId": uuidv4()
 }
 let playerList = []
-logScraper.setCurrentGameID(serverInfo.thisGameId)
 
 function getPSQLSettings() {
     const psqlOptionsPath = 'psqlOptions.json'
@@ -181,7 +180,6 @@ async function postScores(activeSocket, serverFile) {
             Object.assign(serverInfo, fullServerDetails.serverInfo.ServerInfo)
             latestKDAs.mapLabel = serverInfo.mapLabel
             serverInfo.thisGameId = uuidv4()
-            logScraper.setCurrentGameID(serverInfo.thisGameId)
             latestKDAs.allKDASum = allKDASum
             latestKDAs.MapLabel = serverInfo.MapLabel
             latestKDAs.isNewRound = true
@@ -340,5 +338,5 @@ async function init() {
 
 }
 
-module.exports = { init, getPSQLSettings }
+module.exports = { init, getPSQLSettings, serverInfo, playerList }
 

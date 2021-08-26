@@ -27,4 +27,33 @@ async function waitMS(ms) {
     return await new Promise(resolve => setTimeout(resolve, ms));
 }
 
-module.exports = {sendDiscordMessage}
+function constructStatusResponse(serverInfo) {
+    const { MapLabel, ServerName, GameMode, PlayerCount, playerList } = serverInfo
+    const serverStatus = []
+    serverStatus.push(`**Name**: ${ServerName}`)
+    serverStatus.push(`**Map**: ${MapLabel}`)
+    serverStatus.push(`**Game Mode**: ${GameMode}`)
+    serverStatus.push(`**Players**: ${PlayerCount}`)
+    //Players/Teams
+    if (playerList.length > 0) {
+        playerList.sort((a, b) => a.PlayerInfo.a - b.PlayerInfo.a)
+        let playerListMsgArr = []
+        if (serverInfo.Teams) {
+            const teamMsg = `Red: ${serverInfo.Team0Score} | Blue: ${serverInfo.Team1Score}`
+            const redTeamPlayers = playerList.filter(p => p.PlayerInfo.TeamId == '0')
+            const blueTeamPlayers = playerList.filter(p => p.PlayerInfo.TeamId == '1')
+            const redTeamMsg = redTeamPlayers.map(p => `${p.PlayerInfo.PlayerName} - KDA ${p.PlayerInfo.KDA}`)
+            const blueTeamMsg = blueTeamPlayers.map(p => `${p.PlayerInfo.PlayerName} - KDA ${p.PlayerInfo.KDA}`)
+            playerListMsgArr.push(`**Red: ${serverInfo.Team0Score} Points**`, ...redTeamMsg, `**Blue: ${serverInfo.Team1Score} Points**`, ...blueTeamMsg)
+        } else {
+            const playerListPlayersMsg = playerList.map(p => `${p.PlayerInfo.PlayerName} - KDA ${p.PlayerInfo.KDA}`)
+            playerListMsgArr.push(...playerListPlayersMsg)
+        }
+
+        // const playerListMsg =  playerListMsgArr.join('/n')
+        serverStatus.push(...playerListMsgArr)
+    }
+    return serverStatus
+}
+
+module.exports = {sendDiscordMessage, constructStatusResponse}
