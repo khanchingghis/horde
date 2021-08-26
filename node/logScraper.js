@@ -33,7 +33,7 @@ async function handleKillData(obj) {
     console.log('LocalCumList:', currentPlayerList)
 
     const killerPL = currentPlayerList.find(p=>p.PlayerInfo.UniqueId == Killer)
-    const killedPL = currentPlayerList.playerList.find(p=>p.PlayerInfo.UniqueId == Killed)
+    const killedPL = currentPlayerList.find(p=>p.PlayerInfo.UniqueId == Killed)
     let isTK = false
     try{
     isTK = currentServerInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
