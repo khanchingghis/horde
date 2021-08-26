@@ -52,6 +52,7 @@ async function handleAllStats(obj) {
         playerStatObj.TeamId = thisPlayerTeam
         return playerStatObj
     })
+    console.log('PlayerStats:',JSON.stringify(playerStats))
 
     //Write to DB
     const promArr = playerStats.map(playerStatObj => {
@@ -64,7 +65,7 @@ async function handleAllStats(obj) {
 
     //Send AllStats Msg
     const playerStatsSorted = playerStats.sort((a, b) => b.Experience - a.Experience)
-    
+    console.log('PlayerStatsSorted:',JSON.stringify(playerStatsSorted))
     let playerStatMsgArr = []
 
     playerStatMsgArr.push(`**Name**: ${ServerName}`)
@@ -75,7 +76,7 @@ async function handleAllStats(obj) {
     if (isTeamGame) {
         const redTeamPlayers = playerStatsSorted.filter(p => p.TeamId == 0)
         const blueTeamPlayers = playerStatsSorted.filter(p => p.TeamId == 1)
-        const teamMsg = `Red: ${score.serverInfo.Team0Score} | Blue: ${score.serverInfo.Team1Score}`
+        const scoresMsg = `Red: ${score.serverInfo.Team0Score} | Blue: ${score.serverInfo.Team1Score}`
 
         const redTeamMsgArr = redTeamPlayers.map(p => {
             const { playerid, Kill, Death, Assist, Headshot, TeamKill, BombDefused, BombPlanted, Experience } = p
@@ -119,8 +120,10 @@ async function handleRoundEnd(obj) {
     const { Round, WinningTeam } = obj.RoundEnd
     await psql.writeRoundData(currentGameId, Round, WinningTeam)
 
+    const scoresMsg = `Red: ${score.serverInfo.Team0Score} | Blue: ${score.serverInfo.Team1Score}`
+
     //Send msg
-    const roundMsg = `${WinningTeam == 0 ? '**Red' : '**Blue'} Team** has won Round ${Round}`
+    const roundMsg = `${WinningTeam == 0 ? '**Red' : '**Blue'} Team** has won Round ${Round}\n${scoresMsg}`
     bot.sendDiscordMessage(roundMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
