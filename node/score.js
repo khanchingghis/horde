@@ -237,7 +237,7 @@ function addToCumulativePL(pl){
         if (thisPi > -1){
             thisPL[thisPi] = p
         } else {
-            console.log('Added:',p)
+            console.log('Added to Cumulative:',p.PlayerInfo.UniqueId)
             thisPL.push(p)
         }
         

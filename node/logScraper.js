@@ -30,7 +30,7 @@ async function handleKillData(obj) {
     
     // const thisPlayerList = score.playerListCumulative.playerList
     // console.log(Killer,'PLLength:',thisPlayerList)
-    console.log('LocalCumList:', currentPlayerList.length)
+    // console.log('LocalCumList:', currentPlayerList.length)
 
     const killerPL = currentPlayerList.find(p=>p.PlayerInfo.UniqueId == Killer)
     const killedPL = currentPlayerList.find(p=>p.PlayerInfo.UniqueId == Killed)
@@ -38,7 +38,7 @@ async function handleKillData(obj) {
     try{
     isTK = currentServerInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
     } catch(e){
-        console.log('No Match',Killer,Killed,currentPlayerList)
+        console.log('No Match',Killer,Killed)
     }
 
     //Send Kill Msg
@@ -46,7 +46,7 @@ async function handleKillData(obj) {
     bot.sendDiscordMessage(killMsg)
 
     // console.log(killerPL, killedPL)
-    console.log(killMsg)
+    // console.log(killMsg)
     // console.log(`Sent ${Object.keys(obj)[0]}`)
 }
 
@@ -63,7 +63,7 @@ async function handleAllStats(obj) {
         let playerStatObj = { playerid }
         playerStatsArr.forEach(ps => { playerStatObj[ps.statType] = ps.amount })
         const thisPlayerInfo = currentPlayerList.find(p => p.PlayerInfo.UniqueId == playerid)
-        const thisPlayerTeam = thisPlayerInfo && thisPlayerInfo.PlayerInfo.TeamId
+        const thisPlayerTeam = thisPlayerInfo && thisPlayerInfo.PlayerInfo.TeamId || 0
         playerStatObj.TeamId = thisPlayerTeam
         return playerStatObj
     })
