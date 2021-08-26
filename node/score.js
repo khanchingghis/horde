@@ -7,7 +7,6 @@ const servers = require('./servers')
 const { v4: uuidv4 } = require('uuid');
 const psql = require('./psql')
 const dMsg = require('./bot')
-const logScraper = require('./logScraper')
 
 const myFormID = '1FAIpQLScOi8_7neH_71KM1AuS2PL2ZIs794eNv1u4ZunEz8WFuXwyBg'
 
