@@ -31,7 +31,11 @@ async function handleKillData(obj) {
     // console.log(Killer,'PLLength:',thisPlayerList)
     const killerPL = thisPlayerList.find(p=>p.PlayerInfo.UniqueId == Killer)
     const killedPL = thisPlayerList.find(p=>p.PlayerInfo.UniqueId == Killed)
+    try{
     const isTK = score.serverInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
+    } catch(e){
+        console.log(Killer,Killed,thisPlayerList)
+    }
 
     //Send Kill Msg
     const killMsg = `${isTK ? '**TEAMKILL!**':''} ${Headshot ? '**HEADSHOT!**' : ''} ${Killer} > ${Killed} (${KilledBy})`
