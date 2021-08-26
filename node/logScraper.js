@@ -27,7 +27,6 @@ async function handleKillData(obj) {
 
     //Store in DB
     const { Killer, Killed, KilledBy, Headshot } = obj.KillData
-    const killerTeam = 
     const sendRes = await psql.writeKillData(currentGameId, Killer, Killed, KilledBy, Headshot)
 
     //Send Kill Msg
