@@ -5,11 +5,8 @@ const bot = require('./bot')
 const score = require('./score')
 
 let currentGameId = score.serverInfo.thisGameId
-let playerListCumulative = score.playerListCumulative.playerList
 
 const remoteLogPath = '/home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log'
-
-
 
 async function handleObject(obj) {
     const keys = Object.keys(obj)
@@ -34,7 +31,7 @@ async function handleKillData(obj) {
     console.log(Killer,'PLLength:',thisPlayerList.length)
     const killerPL = thisPlayerList.find(p=>p.PlayerInfo.uniqueId == Killer)
     const killedPL = thisPlayerList.find(p=>p.PlayerInfo.uniqueId == Killed)
-    const isTK =  score.serverInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
+    const isTK = score.serverInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
 
     //Send Kill Msg
     const killMsg = `${isTK ? '**TEAMKILL!**':''} ${Headshot ? '**HEADSHOT!**' : ''} ${Killer} > ${Killed} (${KilledBy})`
@@ -47,7 +44,7 @@ async function handleKillData(obj) {
 async function handleAllStats(obj) {
 
     const { MapLabel, ServerName, GameMode, PlayerCount, Teams } = score.serverInfo
-    console.log('RCON:',score.serverInfo, score.playerList, playerListCumulative)
+    console.log('RCON:',score.serverInfo, score.playerList, score.playerListCumulative)
     
     let isTeamGame = Teams
     //Process players Obj
@@ -56,7 +53,7 @@ async function handleAllStats(obj) {
         const playerStatsArr = stat.stats
         let playerStatObj = { playerid }
         playerStatsArr.forEach(ps => { playerStatObj[ps.statType] = ps.amount })
-        const thisPlayerInfo = playerListCumulative.find(p => p.PlayerInfo.UniqueId == playerid)
+        const thisPlayerInfo = score.playerListCumulative.playerList.find(p => p.PlayerInfo.UniqueId == playerid)
         const thisPlayerTeam = thisPlayerInfo && thisPlayerInfo.PlayerInfo.TeamId
         playerStatObj.TeamId = thisPlayerTeam
         return playerStatObj
