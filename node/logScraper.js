@@ -34,7 +34,7 @@ async function handleKillData(obj) {
     try{
     const isTK = score.serverInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
     } catch(e){
-        console.log(Killer,Killed,thisPlayerList)
+        console.log('No Match',Killer,Killed,thisPlayerList)
     }
 
     //Send Kill Msg
