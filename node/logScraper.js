@@ -175,4 +175,4 @@ async function watchLog() {
     });
 }
 
-module.exports = { handleObject, watchLog, setCurrentGameID }
+module.exports = { handleObject, watchLog }
