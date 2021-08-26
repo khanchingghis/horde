@@ -37,15 +37,15 @@ async function handleKillData(obj) {
     const killMsg = `${isTK ? '**TEAMKILL!**':''} ${Headshot ? '**HEADSHOT!**' : ''} ${Killer} > ${Killed} (${KilledBy})`
     bot.sendDiscordMessage(killMsg)
 
-    console.log(killerPL, killedPL)
+    // console.log(killerPL, killedPL)
     console.log(killMsg)
-    console.log(`Sent ${Object.keys(obj)[0]}`)
+    // console.log(`Sent ${Object.keys(obj)[0]}`)
 }
 
 async function handleAllStats(obj) {
 
     const { MapLabel, ServerName, GameMode, PlayerCount, Teams } = score.serverInfo
-    console.log('RCON:',score.serverInfo, score.playerList, score.playerListCumulative)
+    console.log('RCON:',score.serverInfo, score.playerList)
     
     let isTeamGame = Teams
     //Process players Obj
@@ -94,7 +94,17 @@ async function handleAllStats(obj) {
         playerStatMsgArr = constructStatsMsgArr(playerStatsSorted)
     }
 
-    const allStatMsg = `**GAME OVER**. Final Stats: \n${playerStatMsgArr.join('\n')}`
+
+    const headShotsMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'Headshot')
+    const headShotIntro = headShotsMsgArr.length > 0 ? '**HEADSHOTS:**' : ''
+    const plantedMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'BombPlanted')
+    const plantedIntro = plantedMsgArr.length > 0 ? '**Bombs Planted:**' : ''
+    const defusedMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'BombDefused')
+    const defusedIntro = defusedMsgArr.length > 0 ? '**Bombs Defused:**' : ''
+    const TKMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'TeamKill')
+    const TKIntro = TKMsgArr.length > 0 ? '**Teamkills:**' : ''
+
+    const allStatMsg = [`**GAME OVER!**`,...playerStatMsgArr,headShotIntro,...headShotsMsgArr, plantedIntro,...plantedMsgArr,defusedIntro,...defusedMsgArr,TKIntro,...TKMsgArr].join('\n')
     bot.sendDiscordMessage(allStatMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
@@ -108,6 +118,13 @@ function constructStatsMsgArr(playerStatsArr) {
         return `${playerid} K/D/A/XP - ${Kill || 0}/${Death || 0}/${Assist || 0}/${Experience || 0}`
     })
     return playerStatsMsg
+}
+
+function constructStatsMsgArrSingleDetail(playerStatsArr,objectKey){
+    const filteredArr = playerStatsArr.filter(p => p[objectKey])
+    const sortedArr = filteredArr.sort((a,b)=>b[objectKey]-a[objectKey])
+    const msgArr = sortedArr.map(h=>`${h.playerid}:${h[objectKey]}`)
+    return msgArr
 }
 
 async function handleBombData(obj) {

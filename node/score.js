@@ -235,6 +235,7 @@ function addToCumulativePL(pl){
         if (thisPi > -1){
             thisPL[thisPi] = p
         } else {
+            console.log('Added:',p)
             thisPL.push(p)
         }
         
