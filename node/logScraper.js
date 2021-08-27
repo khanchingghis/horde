@@ -41,8 +41,10 @@ async function handleKillData(obj) {
         console.log('No Match',Killer,Killed)
     }
 
+    const emojis = getEmojis(isTK,Headshot,KilledBy)
+
     //Send Kill Msg
-    const killMsg = `${isTK ? '**TEAMKILL!** ':''}${Headshot ? '**HEADSHOT!** ' : ''}${Killer} killed ${Killed} with ${KilledBy}`
+    const killMsg = `${isTK ? '**TEAMKILL!** ':''}${Headshot ? '**HEADSHOT!** ' : ''}${Killer} > ${Killed} (${KilledBy}) ${emojis}`
     bot.sendDiscordMessage(killMsg)
 
     // console.log(killerPL, killedPL)
@@ -104,18 +106,32 @@ async function handleAllStats(obj) {
 
 
     const headShotsMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'Headshot')
-    const headShotIntro = headShotsMsgArr.length > 0 ? '**HEADSHOTS:**' : ''
+    const headShotIntro = headShotsMsgArr.length > 0 ? '**Headshots:** 🤯' : ''
     const plantedMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'BombPlanted')
-    const plantedIntro = plantedMsgArr.length > 0 ? '**Bombs Planted:**' : ''
+    const plantedIntro = plantedMsgArr.length > 0 ? '**Bombs Planted:** 💣' : ''
     const defusedMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'BombDefused')
-    const defusedIntro = defusedMsgArr.length > 0 ? '**Bombs Defused:**' : ''
+    const defusedIntro = defusedMsgArr.length > 0 ? '**Bombs Defused:** 💣' : ''
     const TKMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'TeamKill')
-    const TKIntro = TKMsgArr.length > 0 ? '**Teamkills:**' : ''
+    const TKIntro = TKMsgArr.length > 0 ? '**Teamkills:**❌' : ''
+    const divider = '-----------'
 
-    const allStatMsg = [`**GAME OVER!**`,...playerStatMsgArr,headShotIntro,...headShotsMsgArr, plantedIntro,...plantedMsgArr,defusedIntro,...defusedMsgArr,TKIntro,...TKMsgArr].join('\n')
+    const allStatMsg = [`**GAME OVER!**`,...playerStatMsgArr,divider,headShotIntro,...headShotsMsgArr, plantedIntro,...plantedMsgArr,defusedIntro,...defusedMsgArr,TKIntro,...TKMsgArr].join('\n')
     bot.sendDiscordMessage(allStatMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
+}
+
+function getEmojis(isTK,Headshot,KilledBy){
+    const emojis = require('./emojis.json')
+    const killedByEmojiArr = emojis.KilledBy
+    const killedByEmoji=killedByEmojiArr.find(e=>e.code==KilledBy)
+    const TKEmoji = emojis.TK.emoji
+    const headshotEmoji = emojis.Headshot.emoji
+    let emojisArr = []
+    if (isTK) emojisArr.push(TKEmoji)
+    if (Headshot) emojisArr.push(headshotEmoji)
+    if (killedByEmoji) emojisArr.push(killedByEmoji.emoji)
+    return emojisArr.join('')
 }
 
 function constructStatsMsgArr(playerStatsArr) {
@@ -131,7 +147,7 @@ function constructStatsMsgArr(playerStatsArr) {
 function constructStatsMsgArrSingleDetail(playerStatsArr,objectKey){
     const filteredArr = playerStatsArr.filter(p => p[objectKey])
     const sortedArr = filteredArr.sort((a,b)=>b[objectKey]-a[objectKey])
-    const msgArr = sortedArr.map(h=>`${h.playerid}:${h[objectKey]}`)
+    const msgArr = sortedArr.map(h=>`${h.playerid}: ${h[objectKey]}`)
     return msgArr
 }
 
@@ -140,7 +156,7 @@ async function handleBombData(obj) {
     await psql.writeBombData(currentServerInfo.gameid, Player, BombInteraction)
 
     //Send msg
-    const bombMsg = BombInteraction == 'BombPlanted' ? `**${Player} has planted the bomb!**` : `${Player} has defused the bomb!`
+    const bombMsg = BombInteraction == 'BombPlanted' ? `**BOMB PLANTED by ${Player}!** 💣` : `**$BOMB DEFUSED by ${Player}!** 💣`
     bot.sendDiscordMessage(bombMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)

@@ -1,0 +1,32 @@
+{
+    "KilledBy": [
+        {
+            "code": "Knife",
+            "emoji": "🗡️"
+        },
+        {
+            "code": "Grenade",
+            "emoji": "🧨"
+        },
+        {
+            "code": "grenade_ru",
+            "emoji": "🧨"
+        },
+        {
+            "code": "grenade_us",
+            "emoji": "🧨"
+        },
+        {
+            "code":"gun",
+            "emoji":"🔫"
+        }
+    ],
+    "TK":{
+        "code":true,
+        "emoji":"❌"
+    },
+    "Headshot":{
+        "code":true,
+        "emoji":"🤯"
+    }
+}
