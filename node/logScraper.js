@@ -125,12 +125,18 @@ function getEmojis(isTK,Headshot,KilledBy){
     const emojis = require('./emojis.json')
     const killedByEmojiArr = emojis.KilledBy
     const killedByEmoji=killedByEmojiArr.find(e=>e.code==KilledBy)
+    const killedByEmojiDefault = killedByEmojiArr.find(e=>e.code=='gun')
     const TKEmoji = emojis.TK.emoji
     const headshotEmoji = emojis.Headshot.emoji
     let emojisArr = []
     if (isTK) emojisArr.push(TKEmoji)
     if (Headshot) emojisArr.push(headshotEmoji)
-    if (killedByEmoji) emojisArr.push(killedByEmoji.emoji)
+    if (killedByEmoji) {
+        emojisArr.push(killedByEmoji.emoji)
+    } 
+    // else {
+    //     emojisArr.push(killedByEmojiDefault.emoji)
+    // }
     return emojisArr.join('')
 }
 
