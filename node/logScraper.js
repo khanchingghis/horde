@@ -22,10 +22,7 @@ async function handleObject(obj) {
 
 }
 
-async function handleKillData(obj, isTK) {
-
-    
-    
+async function handleKillData(obj) {
     // const thisPlayerList = score.playerListCumulative.playerList
     // console.log(Killer,'PLLength:',thisPlayerList)
     // console.log('LocalCumList:', currentPlayerList.length)
