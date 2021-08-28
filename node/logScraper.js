@@ -26,6 +26,8 @@ async function handleKillData(obj) {
     // const thisPlayerList = score.playerListCumulative.playerList
     // console.log(Killer,'PLLength:',thisPlayerList)
     // console.log('LocalCumList:', currentPlayerList.length)
+    
+    const { Killer, Killed, KilledBy, Headshot } = obj.KillData
 
     const killerPL = currentPlayerList.find(p=>p.PlayerInfo.UniqueId == Killer)
     const killedPL = currentPlayerList.find(p=>p.PlayerInfo.UniqueId == Killed)
@@ -39,7 +41,6 @@ async function handleKillData(obj) {
     const emojis = getEmojis(isTK,Headshot,KilledBy)
 
     //Store in DB
-    const { Killer, Killed, KilledBy, Headshot } = obj.KillData
     const sendRes = await psql.writeKillData(currentServerInfo.gameid, Killer, Killed, KilledBy, Headshot, isTK)
 
     //Send Kill Msg
