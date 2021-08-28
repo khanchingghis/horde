@@ -22,11 +22,9 @@ async function handleObject(obj) {
 
 }
 
-async function handleKillData(obj) {
+async function handleKillData(obj, isTK) {
 
-    //Store in DB
-    const { Killer, Killed, KilledBy, Headshot } = obj.KillData
-    const sendRes = await psql.writeKillData(currentServerInfo.gameid, Killer, Killed, KilledBy, Headshot)
+    
     
     // const thisPlayerList = score.playerListCumulative.playerList
     // console.log(Killer,'PLLength:',thisPlayerList)
@@ -42,6 +40,10 @@ async function handleKillData(obj) {
     }
 
     const emojis = getEmojis(isTK,Headshot,KilledBy)
+
+    //Store in DB
+    const { Killer, Killed, KilledBy, Headshot } = obj.KillData
+    const sendRes = await psql.writeKillData(currentServerInfo.gameid, Killer, Killed, KilledBy, Headshot, isTK)
 
     //Send Kill Msg
     const killMsg = `${isTK ? '**TEAMKILL!** ':''}${Headshot ? '**HEADSHOT!** ' : ''}${Killer} > ${Killed} (${KilledBy}) ${emojis}`
