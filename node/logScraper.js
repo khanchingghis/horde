@@ -6,6 +6,7 @@ const score = require('./score')
 
 let currentServerInfo = {}
 let currentPlayerList = {}
+let lastRoundWinningTeam = 0
 
 const remoteLogPath = '/home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log'
 
@@ -92,7 +93,13 @@ async function handleAllStats(obj) {
     if (isTeamGame) {
         const redTeamPlayers = playerStatsSorted.filter(p => p.TeamId == 0)
         const blueTeamPlayers = playerStatsSorted.filter(p => p.TeamId == 1)
-        const scoresMsg = `Red: ${currentServerInfo.Team0Score} | Blue: ${currentServerInfo.Team1Score}`
+
+        let redScore = parseInt(currentServerInfo.Team0Score,10)
+        let blueScore = parseInt(currentServerInfo.Team1Score,10)
+        if (redScore < 10 && blueScore < 10){
+            if (lastRoundWinningTeam == 0) redScore ++
+            if (lastRoundWinningTeam == 1) blueScore ++
+        }
 
         const redTeamMsgArr = constructStatsMsgArr(redTeamPlayers)
 
@@ -115,7 +122,7 @@ async function handleAllStats(obj) {
     const TKIntro = TKMsgArr.length > 0 ? '**Teamkills:**❌' : ''
     const divider = '-----------'
 
-    const allStatMsg = [`**GAME OVER!**`,...playerStatMsgArr,divider,headShotIntro,...headShotsMsgArr, plantedIntro,...plantedMsgArr,defusedIntro,...defusedMsgArr,TKIntro,...TKMsgArr].join('\n')
+    const allStatMsg = [divider,`**GAME OVER!**`,...playerStatMsgArr,divider,headShotIntro,...headShotsMsgArr, plantedIntro,...plantedMsgArr,defusedIntro,...defusedMsgArr,TKIntro,...TKMsgArr,divider].join('\n')
     bot.sendDiscordMessage(allStatMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
@@ -162,7 +169,7 @@ async function handleBombData(obj) {
     await psql.writeBombData(currentServerInfo.gameid, Player, BombInteraction)
 
     //Send msg
-    const bombMsg = BombInteraction == 'BombPlanted' ? `**BOMB PLANTED by ${Player}!** 💣` : `**$BOMB DEFUSED by ${Player}!** 💣`
+    const bombMsg = BombInteraction == 'BombPlanted' ? `**BOMB PLANTED by ${Player}!** 💣` : `**BOMB DEFUSED by ${Player}!** 💣`
     bot.sendDiscordMessage(bombMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
@@ -170,6 +177,7 @@ async function handleBombData(obj) {
 
 async function handleRoundEnd(obj) {
     const { Round, WinningTeam } = obj.RoundEnd
+    lastRoundWinningTeam = WinningTeam
     await psql.writeRoundData(currentServerInfo.gameid, Round, WinningTeam)
 
     const scoresMsg = `Red: ${currentServerInfo.Team0Score} | Blue: ${currentServerInfo.Team1Score}`
