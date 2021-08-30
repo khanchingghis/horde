@@ -52,7 +52,7 @@ async function installPavlov(){
     shell.exec(`/root/horde/bash/updateMaps.sh`)
     shell.exec(`/root/horde/bash/selectorLoad.sh`) 
     shell.exec(`systemctl start pavlov`)
-    shell.exec(`systemctl restart systemd-journald.service`)
+    shell.exec(`/root/horde/bash/cleanJournal.sh`)
 
 }
 
