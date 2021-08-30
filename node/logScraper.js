@@ -49,7 +49,7 @@ async function handleKillData(obj) {
     bot.sendDiscordMessage(killMsg)
 
     // console.log(killerPL, killedPL)
-    // console.log(killMsg)
+    console.log(killMsg)
     // console.log(`Sent ${Object.keys(obj)[0]}`)
 }
 
