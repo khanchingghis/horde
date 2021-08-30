@@ -176,7 +176,12 @@ async function handleBombData(obj) {
     await psql.writeBombData(currentServerInfo.thisGameId, Player, BombInteraction)
 
     //Send msg
-    const bombMsg = BombInteraction == 'BombPlanted' ? `**BOMB PLANTED by ${Player}!** 💣` : `**BOMB DEFUSED by ${Player}!** 💣`
+    let bombMsg = ''
+    switch (BombInteraction){
+        case 'BombPlanted': bombMsg=`**BOMB PLANTED by ${Player}!** 💣`; break;
+        case 'BombDefused': bombMsg=`**BOMB DEFUSED by ${Player}!** 💣`; break;
+        case 'BombExploded': bombMsg=`**BOMB EXPLODED!** 💣`; break;
+    }
     bot.sendDiscordMessage(bombMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
