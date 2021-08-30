@@ -7,6 +7,7 @@ const score = require('./score')
 let currentServerInfo = {}
 let currentPlayerList = {}
 let lastRoundWinningTeam = 0
+let selectorMaps = ['SVR_Chingghis_Select']
 
 const remoteLogPath = '/home/steam/pavlovserver/Pavlov/Saved/Logs/Pavlov.log'
 
@@ -47,12 +48,12 @@ async function handleKillData(obj) {
     const exclamations = `${isTK ? '**TEAMKILL!** ':''}${Headshot ? '**HEADSHOT!** ' : ''}`
 
     //Send Kill Msg
-    const killMsg = `${Killer} > ${Killed} (${KilledBy}) ${emojis}`
-    bot.sendDiscordMessage(killMsg)
-
-    // console.log(killerPL, killedPL)
-    console.log(killMsg)
-    // console.log(`Sent ${Object.keys(obj)[0]}`)
+    const isSelectorMap = selectorMaps.includes(currentServerInfo.mapId)
+    if (!isSelectorMap) {
+        const killMsg = `${Killer} > ${Killed} (${KilledBy}) ${emojis}`
+        bot.sendDiscordMessage(killMsg)
+        console.log(killMsg)
+    }
 }
 
 async function handleAllStats(obj) {
@@ -83,51 +84,55 @@ async function handleAllStats(obj) {
 
 
     //Send AllStats Msg
-    const playerStatsSorted = playerStats.sort((a, b) => b.Experience - a.Experience)
-    console.log('PlayerStatsSorted:',playerStatsSorted)
-    let playerStatMsgArr = []
+    const isSelectorMap = selectorMaps.includes(currentServerInfo.mapId)
+    if (!isSelectorMap) {
+        const playerStatsSorted = playerStats.sort((a, b) => b.Experience - a.Experience)
+        console.log('PlayerStatsSorted:', playerStatsSorted)
+        let playerStatMsgArr = []
 
-    playerStatMsgArr.push(`**Name**: ${ServerName}`)
-    playerStatMsgArr.push(`**Map**: ${MapLabel}`)
-    playerStatMsgArr.push(`**Game Mode**: ${GameMode}`)
-    playerStatMsgArr.push(`**Players**: ${PlayerCount}`)
+        playerStatMsgArr.push(`**Name**: ${ServerName}`)
+        playerStatMsgArr.push(`**Map**: ${MapLabel}`)
+        playerStatMsgArr.push(`**Game Mode**: ${GameMode}`)
+        playerStatMsgArr.push(`**Players**: ${PlayerCount}`)
 
-    if (isTeamGame) {
-        const redTeamPlayers = playerStatsSorted.filter(p => p.TeamId == 0)
-        const blueTeamPlayers = playerStatsSorted.filter(p => p.TeamId == 1)
+        if (isTeamGame) {
+            const redTeamPlayers = playerStatsSorted.filter(p => p.TeamId == 0)
+            const blueTeamPlayers = playerStatsSorted.filter(p => p.TeamId == 1)
 
-        let redScore = parseInt(currentServerInfo.Team0Score,10)
-        let blueScore = parseInt(currentServerInfo.Team1Score,10)
-        if (redScore < 10 && blueScore < 10){
-            if (lastRoundWinningTeam == 0) redScore ++
-            if (lastRoundWinningTeam == 1) blueScore ++
+            let redScore = parseInt(currentServerInfo.Team0Score, 10)
+            let blueScore = parseInt(currentServerInfo.Team1Score, 10)
+            if (redScore < 10 && blueScore < 10) {
+                if (lastRoundWinningTeam == 0) redScore++
+                if (lastRoundWinningTeam == 1) blueScore++
+            }
+
+            const redTeamMsgArr = constructStatsMsgArr(redTeamPlayers)
+
+            const blueTeamMsgArr = constructStatsMsgArr(blueTeamPlayers)
+
+            playerStatMsgArr.push(`**Red: ${currentServerInfo.Team0Score} Points**`, ...redTeamMsgArr, `**Blue: ${currentServerInfo.Team1Score} Points**`, ...blueTeamMsgArr)
+
+        } else {
+            playerStatMsgArr = constructStatsMsgArr(playerStatsSorted)
         }
 
-        const redTeamMsgArr = constructStatsMsgArr(redTeamPlayers)
 
-        const blueTeamMsgArr = constructStatsMsgArr(blueTeamPlayers)
+        const headShotsMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted, 'Headshot')
+        const headShotIntro = headShotsMsgArr.length > 0 ? '**Headshots:** 🤯' : ''
+        const plantedMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted, 'BombPlanted')
+        const plantedIntro = plantedMsgArr.length > 0 ? '**Bombs Planted:** 💣' : ''
+        const defusedMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted, 'BombDefused')
+        const defusedIntro = defusedMsgArr.length > 0 ? '**Bombs Defused:** 💣' : ''
+        const TKMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted, 'TeamKill')
+        const TKIntro = TKMsgArr.length > 0 ? '**Teamkills:**❌' : ''
+        const divider = '-----------'
 
-        playerStatMsgArr.push(`**Red: ${currentServerInfo.Team0Score} Points**`, ...redTeamMsgArr, `**Blue: ${currentServerInfo.Team1Score} Points**`, ...blueTeamMsgArr)
-
-    } else {
-        playerStatMsgArr = constructStatsMsgArr(playerStatsSorted)
+        const allStatMsg = [divider, `**GAME OVER!**`, ...playerStatMsgArr, divider, headShotIntro, ...headShotsMsgArr, plantedIntro, ...plantedMsgArr, defusedIntro, ...defusedMsgArr, TKIntro, ...TKMsgArr, divider].join('\n')
+        bot.sendDiscordMessage(allStatMsg)
+        console.log(`Sent ${Object.keys(obj)[0]}`)
     }
 
-
-    const headShotsMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'Headshot')
-    const headShotIntro = headShotsMsgArr.length > 0 ? '**Headshots:** 🤯' : ''
-    const plantedMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'BombPlanted')
-    const plantedIntro = plantedMsgArr.length > 0 ? '**Bombs Planted:** 💣' : ''
-    const defusedMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'BombDefused')
-    const defusedIntro = defusedMsgArr.length > 0 ? '**Bombs Defused:** 💣' : ''
-    const TKMsgArr = constructStatsMsgArrSingleDetail(playerStatsSorted,'TeamKill')
-    const TKIntro = TKMsgArr.length > 0 ? '**Teamkills:**❌' : ''
-    const divider = '-----------'
-
-    const allStatMsg = [divider,`**GAME OVER!**`,...playerStatMsgArr,divider,headShotIntro,...headShotsMsgArr, plantedIntro,...plantedMsgArr,defusedIntro,...defusedMsgArr,TKIntro,...TKMsgArr,divider].join('\n')
-    bot.sendDiscordMessage(allStatMsg)
-
-    console.log(`Sent ${Object.keys(obj)[0]}`)
+    
 }
 
 function getEmojis(isTK,Headshot,KilledBy){
@@ -185,10 +190,12 @@ async function handleRoundEnd(obj) {
     const scoresMsg = `Red: ${currentServerInfo.Team0Score} | Blue: ${currentServerInfo.Team1Score}`
 
     //Send msg
+    if (currentServerInfo.slots > 0){
     const roundMsg = `${WinningTeam == 0 ? '**Red' : '**Blue'} Team** has won Round ${Round}\n${scoresMsg}`
     bot.sendDiscordMessage(roundMsg)
 
     console.log(`Sent ${Object.keys(obj)[0]}`)
+    }
 }
 
 async function watchLog() {
