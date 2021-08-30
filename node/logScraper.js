@@ -44,8 +44,10 @@ async function handleKillData(obj) {
     //Store in DB
     const sendRes = await psql.writeKillData(currentServerInfo.thisGameId, Killer, Killed, KilledBy, Headshot, isTK)
 
+    const exclamations = `${isTK ? '**TEAMKILL!** ':''}${Headshot ? '**HEADSHOT!** ' : ''}`
+
     //Send Kill Msg
-    const killMsg = `${isTK ? '**TEAMKILL!** ':''}${Headshot ? '**HEADSHOT!** ' : ''}${Killer} > ${Killed} (${KilledBy}) ${emojis}`
+    const killMsg = `${Killer} > ${Killed} (${KilledBy}) ${emojis}`
     bot.sendDiscordMessage(killMsg)
 
     // console.log(killerPL, killedPL)
