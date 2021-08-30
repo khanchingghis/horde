@@ -42,7 +42,7 @@ async function handleKillData(obj) {
     const emojis = getEmojis(isTK,Headshot,KilledBy)
 
     //Store in DB
-    const sendRes = await psql.writeKillData(currentServerInfo.gameid, Killer, Killed, KilledBy, Headshot, isTK)
+    const sendRes = await psql.writeKillData(currentServerInfo.thisGameId, Killer, Killed, KilledBy, Headshot, isTK)
 
     //Send Kill Msg
     const killMsg = `${isTK ? '**TEAMKILL!** ':''}${Headshot ? '**HEADSHOT!** ' : ''}${Killer} > ${Killed} (${KilledBy}) ${emojis}`
@@ -74,7 +74,7 @@ async function handleAllStats(obj) {
     //Write to DB
     const promArr = playerStats.map(playerStatObj => {
         const { Kill, Death, Assist, Headshot, TeamKill, BombDefused, BombPlanted, Experience, playerid } = playerStatObj
-        return psql.writeStatData(currentServerInfo.gameid, playerid, Kill, Death, Assist, Headshot, Experience, TeamKill, BombPlanted, BombDefused)
+        return psql.writeStatData(currentServerInfo.thisGameId, playerid, Kill, Death, Assist, Headshot, Experience, TeamKill, BombPlanted, BombDefused)
     })
 
     const sendRes = await Promise.all(promArr)
@@ -166,7 +166,7 @@ function constructStatsMsgArrSingleDetail(playerStatsArr,objectKey){
 
 async function handleBombData(obj) {
     const { Player, BombInteraction } = obj.BombData
-    await psql.writeBombData(currentServerInfo.gameid, Player, BombInteraction)
+    await psql.writeBombData(currentServerInfo.thisGameId, Player, BombInteraction)
 
     //Send msg
     const bombMsg = BombInteraction == 'BombPlanted' ? `**BOMB PLANTED by ${Player}!** 💣` : `**BOMB DEFUSED by ${Player}!** 💣`
@@ -178,7 +178,7 @@ async function handleBombData(obj) {
 async function handleRoundEnd(obj) {
     const { Round, WinningTeam } = obj.RoundEnd
     lastRoundWinningTeam = WinningTeam
-    await psql.writeRoundData(currentServerInfo.gameid, Round, WinningTeam)
+    await psql.writeRoundData(currentServerInfo.thisGameId, Round, WinningTeam)
 
     const scoresMsg = `Red: ${currentServerInfo.Team0Score} | Blue: ${currentServerInfo.Team1Score}`
 
@@ -214,7 +214,7 @@ async function watchLog() {
                 try {
                     //handle object
                     jsonObj = JSON.parse(jsonStr)
-                    jsonObj.gameid = currentServerInfo.gameid
+                    jsonObj.gameid = currentServerInfo.thisGameId
                     handleObject(jsonObj)
                     //clear collection
                     collectionArr = []
