@@ -6,6 +6,7 @@ const score = require('./score')
 
 let currentServerInfo = {}
 let currentPlayerList = {}
+let cumulativePlayerList = {}
 let lastRoundWinningTeam = 0
 let selectorMaps = ['SVR_Chingghis_Select']
 
