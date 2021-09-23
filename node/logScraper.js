@@ -20,9 +20,15 @@ async function handleObject(obj) {
         case "allStats": await handleAllStats(obj); break;
         case "BombData": await handleBombData(obj); break;
         case "RoundEnd": await handleRoundEnd(obj); break;
+        case "RoundState": await handleRoundState(obj); break;
         default: console.log(keys[0], 'Not recognised')
     }
 
+}
+
+async function handleRoundState(obj){
+    const {State} = obj.RoundState
+    console.log(State)
 }
 
 async function handleKillData(obj) {
@@ -30,21 +36,23 @@ async function handleKillData(obj) {
     // console.log(Killer,'PLLength:',thisPlayerList)
     // console.log('LocalCumList:', currentPlayerList.length)
     
-    const { Killer, Killed, KilledBy, Headshot } = obj.KillData
+    const { Killer, Killed, KilledBy, Headshot, KillerTeamID, KilledTeamID } = obj.KillData
 
-    const killerPL = currentPlayerList.find(p=>p.PlayerInfo.UniqueId == Killer)
-    const killedPL = currentPlayerList.find(p=>p.PlayerInfo.UniqueId == Killed)
-    let isTK = false
-    try{
-    isTK = currentServerInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
-    } catch(e){
-        console.log('No Match',Killer,Killed)
-    }
+    // const killerPL = currentPlayerList.find(p=>p.PlayerInfo.UniqueId == Killer)
+    // const killedPL = currentPlayerList.find(p=>p.PlayerInfo.UniqueId == Killed)
+    // let isTK = false
+    // try{
+    // isTK = currentServerInfo.Teams && killerPL.PlayerInfo.TeamId == killedPL.PlayerInfo.TeamId
+    // } catch(e){
+    //     console.log('No Match',Killer,Killed)
+    // }
+
+    const isTK = KillerTeamID == KilledTeamID
 
     const emojis = getEmojis(isTK,Headshot,KilledBy)
 
     //Store in DB
-    const sendRes = await psql.writeKillData(currentServerInfo.thisGameId, Killer, Killed, KilledBy, Headshot, isTK)
+    const sendRes = await psql.writeKillData(currentServerInfo.thisGameId, Killer, Killed, KilledBy, Headshot, isTK, KillerTeamID, KilledTeamID)
 
     const exclamations = `${isTK ? '**TEAMKILL!** ':''}${Headshot ? '**HEADSHOT!** ' : ''}`
 

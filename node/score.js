@@ -187,6 +187,7 @@ async function postScores(activeSocket, serverFile) {
             for (let ipChecki = 0; ipChecki++; ipChecki < 3) {
                 try {
                     if (!fullServerDetails.serverInfo.ServerInfo.ip) {
+                        console.log('No IP yet')
                         await waitMS(5000)
                         fullServerDetails = await servers.getFullServerInfo(activeSocket).catch(e => console.log)
                     }
