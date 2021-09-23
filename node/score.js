@@ -181,7 +181,20 @@ async function postScores(activeSocket, serverFile) {
             //New Game
             await waitMS(3000)
             
-            const fullServerDetails = await servers.getFullServerInfo(activeSocket).catch(e => console.log)
+            let fullServerDetails = await servers.getFullServerInfo(activeSocket).catch(e => console.log)
+            
+            //Make sure we have IP
+            for (let ipChecki = 0; ipChecki++; ipChecki < 3) {
+                try {
+                    if (!fullServerDetails.serverInfo.ServerInfo.ip) {
+                        await waitMS(5000)
+                        fullServerDetails = await servers.getFullServerInfo(activeSocket).catch(e => console.log)
+                    }
+                } catch (e) {
+                    await waitMS(5000)
+                }
+            }
+
             Object.assign(serverInfo, fullServerDetails.serverInfo.ServerInfo)
             latestKDAs.mapLabel = serverInfo.mapLabel
             serverInfo.thisGameId = uuidv4()
