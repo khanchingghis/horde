@@ -13,8 +13,9 @@ chmod +rx -R $localHordeDir
 
 echo "Installing Node..."
 cd $hordeNodeDir
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs
+# curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt install -y nodejs
+sudo apt install -y npm
 
 echo "Installing Node Dependencies..."
 npm i

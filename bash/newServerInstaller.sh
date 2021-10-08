@@ -82,6 +82,9 @@ bCustomServer=true
 bWhitelist=false
 TimeLimit=20
 MapRotation=(MapId="sand", GameMode="SND")
+myHomeMap="SVR_Chingghis_Select"
+selector="FavAll"
+selectorTxt="Manage your own server at PavlovHorde.com!"
 EOL
 
 cat >/home/${INSTALL_USER}/${FOLD_NAME}/Pavlov/Saved/Config/mods.txt <<EOL
