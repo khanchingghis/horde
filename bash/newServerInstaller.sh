@@ -85,6 +85,9 @@ MapRotation=(MapId="sand", GameMode="SND")
 myHomeMap="SVR_Chingghis_Select"
 selector="FavAll"
 selectorTxt="Manage your own server at PavlovHorde.com!"
+myHomeMap="SVR_Chingghis_Select",
+scoreboard="{\"name\":\"Greatest Khan\",\"rank\":\"khan\",\"interval\":\"1 month\",\"minGames\":3,\"desc\":\"(Kills/Deaths)*(Score/Games)\"}",
+webhook: ""
 EOL
 
 cat >/home/${INSTALL_USER}/${FOLD_NAME}/Pavlov/Saved/Config/mods.txt <<EOL
