@@ -101,6 +101,8 @@ app.post('/writeGameIni', (req, res, next) => {
     try {
 
         const gameini = req.body.gameini
+        const homeMap = gameini.myHomeMap || 'SVR_Chingghis_Select'
+        
         if (!gameini) throw new Error('No Game Ini Body')
 
         let writeGameIni = '[/Script/Pavlov.DedicatedServer]\n'
@@ -117,7 +119,7 @@ app.post('/writeGameIni', (req, res, next) => {
             fs.writeFileSync(gameIniPathR, writeGameIni)
         } else {
             console.log('updating selector')
-            let gameiniR = {...gameini, Maps:[{MapId:'SVR_Chingghis_Select',GameMode:'DM'}]}
+            let gameiniR = {...gameini, Maps:[{MapId:homeMap,GameMode:'DM'}]}
             writeGameIniR += apiF.JSONToIni(gameiniR)
             fs.writeFileSync(gameIniPath, writeGameIni)
             fs.writeFileSync(gameIniPathR, writeGameIniR)
