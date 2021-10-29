@@ -88,7 +88,7 @@ selector="FavAll"
 selectorTxt="Manage your own server at PavlovHorde.com!"
 myHomeMap="SVR_Chingghis_Select",
 scoreboard="{\"name\":\"Greatest Khan\",\"rank\":\"khan\",\"interval\":\"1 month\",\"minGames\":3,\"desc\":\"(Kills/Deaths)*(Score/Games)\"}",
-webhook: ""
+webhook=""
 ApiKey=${API_KEY}
 EOL
 
