@@ -1,6 +1,7 @@
 #!/bin/bash
 
 INSTALL_USER="steam"
+API_KEY=\"$3\"
 
 Install_Steam () {
     apt update && apt install -y gdb curl lib32gcc1 libc++-dev unzip
@@ -88,7 +89,7 @@ selectorTxt="Manage your own server at PavlovHorde.com!"
 myHomeMap="SVR_Chingghis_Select",
 scoreboard="{\"name\":\"Greatest Khan\",\"rank\":\"khan\",\"interval\":\"1 month\",\"minGames\":3,\"desc\":\"(Kills/Deaths)*(Score/Games)\"}",
 webhook: ""
-ApiKey="OA5ypB4T1liV7BQxVE3h5Znd"
+ApiKey=${API_KEY}
 EOL
 
 cat >/home/${INSTALL_USER}/${FOLD_NAME}/Pavlov/Saved/Config/mods.txt <<EOL

@@ -45,8 +45,9 @@ async function installPavlov(){
     fs.writeFileSync(serverOptionsPath,JSON.stringify(serverOptionsEnc))
     servername = servername.replace(`'`,`'"'"'`)
     rconpass = rconpass.replace(`'`,`'"'"'`)
+    const apiKey = serverOptions.apiKey
 
-    shell.exec(`/root/horde/bash/newServerInstaller.sh '${servername}' '${rconpass}'`)
+    shell.exec(`/root/horde/bash/newServerInstaller.sh '${servername}' '${rconpass}' '${apiKey}'`)
     shell.exec(`/root/horde/bash/installServices.sh`)
     shell.exec(`systemctl stop pavlov`)
     shell.exec(`/root/horde/bash/updateMaps.sh`)
