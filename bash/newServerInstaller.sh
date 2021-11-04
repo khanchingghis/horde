@@ -79,7 +79,8 @@ bVerboseLogging=true
 bEnabled=true
 MaxPlayers=${SERVER_MAX_PLAYERS}
 bSecured=true
-bCustomServer=true 
+bCustomServer=true
+ApiKey=${API_KEY}
 bWhitelist=false
 TimeLimit=20
 MapRotation=(MapId="sand", GameMode="SND")
@@ -89,7 +90,6 @@ selectorTxt="Manage your own server at PavlovHorde.com!"
 myHomeMap="SVR_Chingghis_Select",
 scoreboard="{\"name\":\"Greatest Khan\",\"rank\":\"khan\",\"interval\":\"1 month\",\"minGames\":3,\"desc\":\"(Kills/Deaths)*(Score/Games)\"}",
 webhook=""
-ApiKey=${API_KEY}
 EOL
 
 cat >/home/${INSTALL_USER}/${FOLD_NAME}/Pavlov/Saved/Config/mods.txt <<EOL
