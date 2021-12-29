@@ -18,7 +18,7 @@ if [ $localCommit == $upstreamCommit ]; then
     echo "No updates"
 else
     echo "Updating Repo..."
-    cd $localHordeDir && git fetch origin master && git reset --hard origin/master
+    cd $localHordeDir && git fetch origin master --depth=1 && git reset --hard origin/master
     chmod +rx -R $localHordeDir
 
     echo "Updating Maps..."
