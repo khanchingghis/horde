@@ -1,0 +1,7 @@
+.vscode/*
+bash/local/
+node/serverOptions*.json
+node/psqlOptions*.json
+node/tests
+*node_modules
+

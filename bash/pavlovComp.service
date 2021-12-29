@@ -1,0 +1,18 @@
+[Unit]
+Description=Pavlov VR dedicated server
+After=updateAll.service
+Before=hordeScore.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/steam/pavlovserver
+ExecStart=/home/steam/pavlovserver/PavlovServer.sh -COMPETITIVE=1
+# XXX the server will often crash on round end/map change with a segfault
+# until dave hires more programmers, just restart the server every time
+RestartSec=5
+Restart=always
+User=steam
+Group=steam
+
+[Install]
+WantedBy = multi-user.target

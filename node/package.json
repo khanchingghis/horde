@@ -1,0 +1,21 @@
+{
+  "name": "score",
+  "version": "1.0.0",
+  "description": "Pavlov Score",
+  "main": "score.js",
+  "scripts": {
+    "test": "node score.js"
+  },
+  "author": "Chingghis",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "md5": "^2.3.0",
+    "pg": "^8.5.1",
+    "shelljs": "^0.8.4",
+    "tail": "^2.2.3",
+    "uuid": "^8.3.1"
+  }
+}

@@ -1,0 +1,10 @@
+[Unit]
+Description=Update Pavlov Maps and Horde Scripts
+
+[Service]
+ExecStart=/root/horde/bash/updateAll.sh
+Restart=always
+RestartSec=1h
+
+[Install]
+WantedBy = multi-user.target

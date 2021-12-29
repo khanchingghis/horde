@@ -1,0 +1,12 @@
+[Unit]
+Description=Horde Scores
+After=updateAll.service
+
+[Service]
+Type=simple
+ExecStart=/root/horde/bash/hordeScore.sh
+RestartSec=60
+Restart=always
+
+[Install]
+WantedBy = multi-user.target
