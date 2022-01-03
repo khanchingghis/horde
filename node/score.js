@@ -214,10 +214,12 @@ async function postScores(activeSocket, serverFile) {
         }
 
             
+        //Send Full data every score change
+        // const res = await psql.sendData(playerList, serverInfo)
+        //     .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
+        //     .catch(e => console.log('SQL Error:', e))
 
-        const res = await psql.sendData(playerList, serverInfo)
-            .then(x => console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum))
-            .catch(e => console.log('SQL Error:', e))
+            console.log(timeStamp, 'Updated Game: ', playerList.length, 'players. Total Kills: ', serverInfo.KSum)
 
         if (isPlayerCountChanged) {
             if (webhookUrl){
