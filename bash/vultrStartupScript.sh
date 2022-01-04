@@ -6,6 +6,8 @@ hordeNodeDir=$localHordeDir"/node"
 hordeBashDir=$localHordeDir"/bash"
 hordeRepo="https://github.com/khanchingghis/horde"
 
+sudo apt install ca-certificates
+
 echo "Installing RClone..."
 curl https://rclone.org/install.sh | sudo bash
 
