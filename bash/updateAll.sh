@@ -20,9 +20,8 @@ else
     echo "Updating Repo..."
     cd $localHordeDir && git fetch origin master --depth=1 && git reset --hard origin/master
     chmod +rx -R $localHordeDir
-
-    echo "Updating Maps..."
-    cd $localMapsDir
-    unzip -q -o "*.zip" -d $mapsLocalFolder
-    chmod +rx -R $mapsLocalFolder
 fi
+
+echo "Updating Maps..."
+rclone sync :s3,endpoint=ewr1.vultrobjects.com:hordemaps/ $mapsLocalFolder
+chmod +rx -R $mapsLocalFolder

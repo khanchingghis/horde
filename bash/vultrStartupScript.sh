@@ -6,6 +6,9 @@ hordeNodeDir=$localHordeDir"/node"
 hordeBashDir=$localHordeDir"/bash"
 hordeRepo="https://github.com/khanchingghis/horde"
 
+echo "Installing RClone..."
+curl https://rclone.org/install.sh | sudo bash
+
 echo "Downloading Repo..."
 cd $localInstallDir
 git clone $hordeRepo

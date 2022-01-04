@@ -9,4 +9,4 @@ jobs:
       env:
         RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
       with:
-        args: copy ./maps/ vultr:webassets/maps/
+        args: sync ./maps/ vultr:webassets/maps/
