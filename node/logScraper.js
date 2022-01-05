@@ -21,7 +21,7 @@ async function handleObject(obj) {
         case "BombData": await handleBombData(obj); break;
         case "RoundEnd": await handleRoundEnd(obj); break;
         case "RoundState": await handleRoundState(obj); break;
-        case "SwitchTeam": await handleSwitchTeam(obj); break;
+        // case "SwitchTeam": await handleSwitchTeam(obj); break;
         default: console.log(keys[0], 'Not recognised')
     }
 
@@ -32,10 +32,10 @@ async function handleRoundState(obj){
     console.log('Round:',State)
 }
 
-async function handleRoundState(obj){
-    const {PlayerID, NewTeamID} = obj.SwitchTeam
-    console.log(PlayerID,' Switched to ',NewTeamID)
-}
+// async function handleSwitchTeam(obj){
+//     const {PlayerID, NewTeamID} = obj.SwitchTeam
+//     console.log(PlayerID,' Switched to ',NewTeamID)
+// }
 
 async function handleKillData(obj) {
     // const thisPlayerList = score.playerListCumulative.playerList
