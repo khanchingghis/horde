@@ -105,6 +105,7 @@ EOL
 
 touch /home/steam/pavlovserver/Pavlov/Saved/Config/blacklist.txt
 chmod o+rwx /home/steam/pavlovserver/Pavlov/Saved/Config/blacklist.txt
+chmod o+rwx /home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt
 
 
 
