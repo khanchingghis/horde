@@ -26,9 +26,9 @@ const hordeBashPath = '/root/horde/bash/'
 
 let myIP = ''
 
-// app.use(bodyParser.json())
-// app.use(bodyParser.urlencoded({ extended: true }))
-// app.use(cors())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cors())
 
 let clientInfo = {}
 
@@ -36,7 +36,7 @@ let clientInfo = {}
 //Check Pass
 app.use(async (req, res, next) => {
 
-    console.log(req)
+    // console.log(req)
 
     try {
 
