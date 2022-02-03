@@ -35,6 +35,9 @@ let clientInfo = {}
 
 //Check Pass
 app.use(async (req, res, next) => {
+
+    console.log(req)
+
     try {
 
         const clientip = req.headers['x-forwarded-for'] ||
