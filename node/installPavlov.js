@@ -48,6 +48,8 @@ async function installPavlov(){
     const ApiKey = serverOptions.ApiKey
     const isRC = serverOptions.isRC
 
+    console.log(`Installing ${isRC ? 'RC' : 'Live'} server...`)
+
     shell.exec(`ufw disable`)
     if (isRC){
         shell.exec(`/root/horde/bash/newServerInstallerRC.sh '${servername}' '${rconpass}' '${ApiKey}'`)

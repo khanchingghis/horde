@@ -107,6 +107,8 @@ touch /home/steam/pavlovserver/Pavlov/Saved/Config/blacklist.txt
 chmod o+rwx /home/steam/pavlovserver/Pavlov/Saved/Config/blacklist.txt
 chmod o+rwx /home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt
 
+chmod -R +rwx /home/steam/pavlovserver/
+
 }
 
 if [ $# -eq 0 ]; then
