@@ -46,9 +46,15 @@ async function installPavlov(){
     servername = servername.replace(`'`,`'"'"'`)
     rconpass = rconpass.replace(`'`,`'"'"'`)
     const ApiKey = serverOptions.ApiKey
+    const isRC = serverOptions.isRC
 
     shell.exec(`ufw disable`)
-    shell.exec(`/root/horde/bash/newServerInstaller.sh '${servername}' '${rconpass}' '${ApiKey}'`)
+    if (isRC){
+        shell.exec(`/root/horde/bash/newServerInstallerRC.sh '${servername}' '${rconpass}' '${ApiKey}'`)
+    } else {
+        shell.exec(`/root/horde/bash/newServerInstaller.sh '${servername}' '${rconpass}' '${ApiKey}'`)
+    }
+    
     shell.exec(`/root/horde/bash/installServices.sh`)
     shell.exec(`systemctl stop pavlov`)
     shell.exec(`/root/horde/bash/updateMaps.sh`)
