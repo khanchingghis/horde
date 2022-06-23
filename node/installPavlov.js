@@ -46,7 +46,7 @@ async function installPavlov(){
     servername = servername.replace(`'`,`'"'"'`)
     rconpass = rconpass.replace(`'`,`'"'"'`)
     const ApiKey = serverOptions.ApiKey
-    const isRC = (serverOptions.isRC === 'true' || serverOptions.isRC === 'True')
+    const isRC = (serverOptions.isRC === 'true' || serverOptions.isRC === 'True' || serverOptions.isRC === true)
 
     console.log(`Installing ${isRC ? 'RC' : 'Live'} server...`)
 
