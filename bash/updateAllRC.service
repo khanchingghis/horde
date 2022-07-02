@@ -2,7 +2,7 @@
 Description=Update Pavlov Maps and Horde Scripts
 
 [Service]
-ExecStart=/root/horde/bash/updateAll.sh
+ExecStart=/root/horde/bash/updateAllRC.sh
 Restart=always
 RestartSec=6h
 

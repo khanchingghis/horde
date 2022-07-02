@@ -53,16 +53,23 @@ async function installPavlov(){
     shell.exec(`ufw disable`)
     if (isRC){
         shell.exec(`/root/horde/bash/newServerInstallerRC.sh '${servername}' '${rconpass}' '${ApiKey}'`)
+        shell.exec(`/root/horde/bash/installServicesRC.sh`)
+        shell.exec(`systemctl stop pavlov`)
+        shell.exec(`/root/horde/bash/updateMapsRC.sh`) 
+        shell.exec(`systemctl start pavlov`)
+        shell.exec(`/root/horde/bash/cleanJournal.sh`)
     } else {
         shell.exec(`/root/horde/bash/newServerInstaller.sh '${servername}' '${rconpass}' '${ApiKey}'`)
+        shell.exec(`/root/horde/bash/installServices.sh`)
+        shell.exec(`systemctl stop pavlov`)
+        shell.exec(`/root/horde/bash/updateMaps.sh`)
+        shell.exec(`/root/horde/bash/selectorLoad.sh`) 
+        shell.exec(`systemctl start pavlov`)
+        shell.exec(`/root/horde/bash/cleanJournal.sh`)
+    
     }
     
-    shell.exec(`/root/horde/bash/installServices.sh`)
-    shell.exec(`systemctl stop pavlov`)
-    shell.exec(`/root/horde/bash/updateMaps.sh`)
-    shell.exec(`/root/horde/bash/selectorLoad.sh`) 
-    shell.exec(`systemctl start pavlov`)
-    shell.exec(`/root/horde/bash/cleanJournal.sh`)
+    
 
 }
 
