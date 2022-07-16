@@ -23,5 +23,5 @@ else
 fi
 
 echo "Updating Maps..."
-rclone sync :s3,endpoint=ewr1.vultrobjects.com:hordemaps/ $mapsLocalFolder
+rclone sync :s3,endpoint=ewr1.vultrobjects.com:hordemaps427/ $mapsLocalFolder
 chmod +rx -R $mapsLocalFolder
