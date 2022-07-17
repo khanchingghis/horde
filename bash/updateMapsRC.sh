@@ -7,4 +7,4 @@ mapsLocalFolder="/home/steam/pavlovserver/Pavlov/Saved/maps/"
 
 echo "Updating Maps..."
 rclone sync :s3,endpoint=ewr1.vultrobjects.com:hordemaps427/ $mapsLocalFolder
-chmod +rx -R $mapsLocalFolder
+chmod 777 -R $mapsLocalFolder

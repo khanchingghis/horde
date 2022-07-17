@@ -115,7 +115,7 @@ app.post('/writeGameIni', (req, res, next) => {
 
         shell.exec('systemctl stop pavlov')
         
-        const    = gameini.selector
+        const selector = gameini.selector
         if ( !selector || selector == 'None'){
             console.log('updating selector')
             fs.writeFileSync(gameIniPath, writeGameIni)
