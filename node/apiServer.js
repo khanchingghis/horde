@@ -106,7 +106,11 @@ app.post('/writeGameIni', (req, res, next) => {
         const gameini = req.body.gameini
         const homeMap = gameini.myHomeMap || 'SVR_Chingghis_Select'
 
+        try {
         fs.mkdirSync(path.dirname(gameIniPath),{recursive:true})
+        } catch (e){
+            console.log('Dir already exists')
+        }
         
         if (!gameini) throw new Error('No Game Ini Body')
 
