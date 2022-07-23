@@ -105,6 +105,8 @@ app.post('/writeGameIni', (req, res, next) => {
 
         const gameini = req.body.gameini
         const homeMap = gameini.myHomeMap || 'SVR_Chingghis_Select'
+
+        fs.mkdirSync(path.dirname(gameIniPath),{recursive:true})
         
         if (!gameini) throw new Error('No Game Ini Body')
 
@@ -118,8 +120,8 @@ app.post('/writeGameIni', (req, res, next) => {
         const selector = gameini.selector
         if ( !selector || selector == 'None'){
             console.log('updating selector')
-            fs.writeFileSync(gameIniPath, writeGameIni)
             fs.writeFileSync(gameIniPathR, writeGameIni)
+            fs.writeFileSync(gameIniPath, writeGameIni)
         } else {
             console.log('updating selector')
             let gameiniR = {...gameini, Maps:[{MapId:homeMap,GameMode:'DM'}]}
