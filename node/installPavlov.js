@@ -3,6 +3,7 @@ const fs = require('fs')
 const md5 = require('md5')
 const thisPath = __dirname
 const shell = require("shelljs")
+const { getMyIP } = require('./apiFunctions')
 
 
 async function getInstanceUserData(){
@@ -13,7 +14,7 @@ async function getInstanceUserData(){
         const instanceID = instanceDetails['instance-v2-id']
         const config = {
             method:'post',
-            url:'https://api.pavlovhorde.com:8003/vultr/getInstanceUserData',
+            url:'https://api2.pavlovhorde.com:8003/vultr/getInstanceUserData',
             data: {
                 instanceID
             }
@@ -30,13 +31,32 @@ async function getInstanceMetaData(){
     return res.data
 }
 
+async function checkPassword(newRCONPass, user, serverip){
+   
+    const config = {
+        method:'post',
+        url:'https://api2.pavlovhorde.com:8003/changeRCONPasswordFromServer',
+        data:{
+            newRCONPass, user, serverip
+        }
+    }
+
+    const res = await axios(config)
+    return res
+}
+
+
 async function installPavlov(){
 
     const userData = await getInstanceUserData()
+    const myIP = await getMyIP()
+
 
     console.log(userData)
 
-    let {servername, rconpass, psqlOptions, serverOptions} = userData
+    let {servername, rconpass, psqlOptions, serverOptions, username} = userData
+
+    
 
     const psqlOptionsPath = thisPath + '/psqlOptions.json'
     const serverOptionsPath = thisPath + '/serverOptions.json'
@@ -47,6 +67,12 @@ async function installPavlov(){
     rconpass = rconpass.replace(`'`,`'"'"'`)
     const ApiKey = serverOptions.ApiKey
     const isRC = (serverOptions.isRC === 'true' || serverOptions.isRC === 'True' || serverOptions.isRC === true)
+
+    
+    //check/set my RCON pass in DB
+    const passCheckRes = await checkPassword(rconpass,username, myIP)
+    console.log(JSON.stringify(passCheckRes.data))
+
 
     console.log(`Installing ${isRC ? 'RC' : 'Live'} server...`)
 
