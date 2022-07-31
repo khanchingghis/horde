@@ -70,8 +70,12 @@ async function installPavlov(){
 
     
     //check/set my RCON pass in DB
+    try {
     const passCheckRes = await checkPassword(rconpass,username, myIP)
     console.log(JSON.stringify(passCheckRes.data))
+    } catch (e){
+        console.log(`Could not change pass`,e)
+    }
 
 
     console.log(`Installing ${isRC ? 'RC' : 'Live'} server...`)
