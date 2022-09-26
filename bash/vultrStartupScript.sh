@@ -13,7 +13,7 @@ curl https://rclone.org/install.sh | sudo bash
 
 echo "Downloading Repo..."
 cd $localInstallDir
-git clone $hordeRepo
+git clone $hordeRepo --depth=1
 chmod +rx -R $localHordeDir
 
 echo "Installing Node..."
