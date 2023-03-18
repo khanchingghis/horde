@@ -40,6 +40,13 @@ async function restartPavlov(){
     return resArr
 }
 
+async function getCPUSnapshot(){
+    console.log(`CPU High. Getting snapshots...`)
+    const command = `top -b -n 3`
+    let resArr = await execShellCommand(command)
+    return resArr
+}
+
 async function checkAllSend(){
     const nonGamingServers = ['45.32.183.95']
     const cpu = await checkCPU()
@@ -51,6 +58,7 @@ async function checkAllSend(){
     const {mapLabel, slots} = thisServer || {}
     let restart = false
     if (cpu > 95 && !nonGamingServers.includes(ip)) {
+        getCPUSnapshot()
         restartPavlov()
         restart = true
     }
