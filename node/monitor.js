@@ -42,9 +42,9 @@ async function restartPavlov(){
 
 async function getCPUSnapshot(){
     console.log(`CPU High. Getting snapshots...`)
-    const command = `top -b -n 3`
+    const command = `top -b -n 1 | sed -n '8,18p'`
     let resArr = await execShellCommand(command)
-    return resArr
+    console.log(resArr)
 }
 
 async function checkAllSend(){
