@@ -108,6 +108,9 @@ touch /home/steam/pavlovserver/Pavlov/Saved/Config/blacklist.txt
 chmod o+rwx /home/steam/pavlovserver/Pavlov/Saved/Config/blacklist.txt
 chmod o+rwx /home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt
 
+sudo rm /usr/lib/x86_64-linux-gnu/libc++.so 
+sudo ln -s /usr/lib/x86_64-linux-gnu/libc++.so.1 /usr/lib/x86_64-linux-gnu/libc++.so
+
 }
 
 if [ $# -eq 0 ]; then
