@@ -109,6 +109,9 @@ chmod o+rwx /home/steam/pavlovserver/Pavlov/Saved/Config/mods.txt
 
 chmod -R +rwx /home/steam/pavlovserver/
 
+sudo rm /usr/lib/x86_64-linux-gnu/libc++.so 
+sudo ln -s /usr/lib/x86_64-linux-gnu/libc++.so.1 /usr/lib/x86_64-linux-gnu/libc++.so
+
 }
 
 if [ $# -eq 0 ]; then
