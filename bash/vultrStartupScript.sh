@@ -7,9 +7,7 @@ hordeBashDir=$localHordeDir"/bash"
 hordeRepo="https://github.com/khanchingghis/horde"
 
 sudo apt install ca-certificates
-
-# echo "Installing RClone..."
-# curl https://rclone.org/install.sh | sudo bash
+sudo apt update
 
 echo "Downloading Repo..."
 cd $localInstallDir
@@ -18,7 +16,6 @@ chmod +rx -R $localHordeDir
 
 echo "Installing Node..."
 cd $hordeNodeDir
-# curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt install -y nodejs
 sudo apt install -y npm
 
