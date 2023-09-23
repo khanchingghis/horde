@@ -8,8 +8,8 @@ hordeRepo="https://github.com/khanchingghis/horde"
 
 sudo apt install ca-certificates
 
-echo "Installing RClone..."
-curl https://rclone.org/install.sh | sudo bash
+# echo "Installing RClone..."
+# curl https://rclone.org/install.sh | sudo bash
 
 echo "Downloading Repo..."
 cd $localInstallDir
