@@ -8,4 +8,4 @@ echo "Cleaning $journalConfPath and setting limit to $limit"
 rm -r /var/log/journal/*
 sed -i -e "s/#SystemMaxUse=/SystemMaxUse=$limit/" $journalConfPath
 sudo systemctl kill --kill-who=main --signal=SIGUSR2 systemd-journald.service
-systemd restart systemd-journald
+systemctl restart systemd-journald
