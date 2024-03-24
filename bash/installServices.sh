@@ -18,8 +18,8 @@ install_service() {
     systemctl start $serviceName
 }
 install_service "pavlov"
-install_service "updateAll"
+# install_service "updateAll"
 
 install_service "hordeScore"
-install_service "apiServer"
+# install_service "apiServer"
 install_service "hordeMonitor"
